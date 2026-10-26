@@ -1,4 +1,4 @@
-<div class="fixed inset-0 bg-blue-dark flex flex-col overflow-y-auto scroll-hidden font-sans" data-browser-refresh-via-ping>
+<div class="flex min-h-dvh flex-col bg-blue-dark font-sans" data-browser-refresh-via-ping>
     @php
         $serverPingUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
             'scan-qrcode.ping',
@@ -8,41 +8,45 @@
         );
     @endphp
     <header
-        class="sticky top-0 z-30 border-b border-white/10 bg-slate-950/80 px-4 py-4 shadow-2xl backdrop-blur-xl">
+        class="sticky top-0 z-30 border-b border-white/10 bg-slate-950/80 px-4 py-3 shadow-2xl backdrop-blur-xl sm:px-6">
 
-        <div class="mx-auto flex items-center max-w-7xl justify-between gap-4">
+        <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-3">
 
             <!-- brand -->
-            <div class="flex items-center gap-4">
+            <div class="flex min-w-0 items-center gap-3">
 
-                <img
-                    src="{{ asset('assets/img/logo_smkn_2.png') }}"
-                    class="w-10"
+                <img src="{{ asset('assets/img/logo_smkn_2.png') }}" class="w-9 shrink-0 sm:w-10"
                     alt="Logo SMKN 2 Banjarmasin">
 
-                <div>
-                    <h1 class="text-sm font-bold uppercase tracking-wide text-white">
+                <div class="min-w-0">
+                    <h1 class="truncate text-sm font-bold uppercase tracking-wide text-white">
                         Absensi QR
                     </h1>
 
-                    <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">
+                    <p class="truncate text-[10px] uppercase tracking-[0.25em] text-slate-400 sm:text-[11px]">
                         SMKN 2 Banjarmasin
                     </p>
                 </div>
 
             </div>
 
-            <!-- title -->
-            <div class="hidden text-center md:block">
+            <!-- clock + connection: visible on all sizes, compact on mobile -->
+            <div class="flex shrink-0 items-center gap-2">
+                <p id="server-status"
+                    class="hidden items-center gap-1.5 rounded-full border border-red-400/30 bg-red-500/10 px-3 py-1.5 text-[11px] font-semibold text-red-300">
+                    <span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>
+                    <span class="hidden sm:inline">Tidak terhubung ke server</span>
+                    <span class="sm:hidden">Offline</span>
+                </p>
 
                 <div
-                    class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-5 py-2 text-sm font-semibold text-blue-100 backdrop-blur">
+                    class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-semibold backdrop-blur sm:px-5 sm:py-2 sm:text-sm">
 
-                    <div class="h-2 w-2 animate-pulse rounded-full bg-emerald-400"></div>
-                    <span class="text-white">
+                    <div class="h-2 w-2 shrink-0 animate-pulse rounded-full bg-emerald-400"></div>
+                    <span class="hidden text-white lg:inline">
                         {{ $dateNow ?? 'Tanggal sekarang' }},
                     </span>
-                    <span class="text-white" id="clock">
+                    <span class="text-white tabular-nums" id="clock">
                         {{ now()->format('H:i:s') ?? 'Waktu sekarang' }}
                     </span>
 
@@ -56,40 +60,32 @@
 
     @include('components.scan-floating-actions')
 
-    <main class="flex items-center justify-center p-4 pb-40">
+    <main
+        class="mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-center gap-4 px-4 py-6 sm:px-6 lg:flex-row lg:items-stretch lg:gap-8">
         <!-- SCANNER AREA -->
-        <div class="w-full max-w-2xl">
-
-            <!-- mobile label -->
-            {{-- <div class="mb-5 block text-center md:hidden">
-
-                <div
-                    class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-5 py-2 text-sm font-semibold text-blue-100 backdrop-blur">
-
-                    <div class="h-2 w-2 animate-pulse rounded-full bg-emerald-400"></div>
-
-                    Absen Masuk
-
-                </div>
-
-                <p class="mt-2 text-xs text-slate-400">
-                    {{ $dateNow ?? 'Tanggal sekarang' }}
-                </p>
-
-            </div> --}}
+        <div class="w-full max-w-xl lg:max-w-2xl">
 
             <!-- scanner card -->
             <div
-                class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/10 p-4 shadow-2xl backdrop-blur-xl">
-                <!-- reader wrapper -->
-                <div class="relative aspect-square w-full overflow-hidden rounded-[1.6rem] bg-black shadow-2xl">
+                class="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl sm:rounded-[2rem] sm:p-4">
+                <!-- reader wrapper: portrait-friendly on phones, square on larger screens -->
+                <div
+                    class="relative aspect-[3/4] w-full overflow-hidden rounded-[1.1rem] bg-black shadow-2xl sm:rounded-[1.6rem] min-[480px]:aspect-square">
 
                     <!-- corner frame -->
                     <div class="pointer-events-none absolute inset-0 z-20">
-                        <div class="absolute left-4 top-4 h-12 w-12 rounded-tl-2xl border-l-4 border-t-4 border-blue-400"></div>
-                        <div class="absolute right-4 top-4 h-12 w-12 rounded-tr-2xl border-r-4 border-t-4 border-blue-400"></div>
-                        <div class="absolute bottom-4 left-4 h-12 w-12 rounded-bl-2xl border-b-4 border-l-4 border-blue-400"></div>
-                        <div class="absolute bottom-4 right-4 h-12 w-12 rounded-br-2xl border-b-4 border-r-4 border-blue-400"></div>
+                        <div
+                            class="absolute left-3 top-3 h-10 w-10 rounded-tl-2xl border-l-4 border-t-4 border-blue-400 sm:left-4 sm:top-4 sm:h-12 sm:w-12">
+                        </div>
+                        <div
+                            class="absolute right-3 top-3 h-10 w-10 rounded-tr-2xl border-r-4 border-t-4 border-blue-400 sm:right-4 sm:top-4 sm:h-12 sm:w-12">
+                        </div>
+                        <div
+                            class="absolute bottom-3 left-3 h-10 w-10 rounded-bl-2xl border-b-4 border-l-4 border-blue-400 sm:bottom-4 sm:left-4 sm:h-12 sm:w-12">
+                        </div>
+                        <div
+                            class="absolute bottom-3 right-3 h-10 w-10 rounded-br-2xl border-b-4 border-r-4 border-blue-400 sm:bottom-4 sm:right-4 sm:h-12 sm:w-12">
+                        </div>
                     </div>
 
                     <!-- center helper -->
@@ -99,38 +95,61 @@
 
                     <!-- scan line -->
                     <div
-                        class="pointer-events-none absolute left-[22%] top-1/2 z-20 h-0.5 w-[56%] -translate-y-1/2 animate-pulse rounded-full bg-blue-400 shadow-[0_0_25px_rgba(96,165,250,0.9)]">
+                        class="scan-line pointer-events-none absolute left-[22%] top-1/2 z-20 h-0.5 w-[56%] -translate-y-1/2 rounded-full bg-blue-400 shadow-[0_0_25px_rgba(96,165,250,0.9)]">
                     </div>
 
                     <!-- camera -->
-                    <div
-                        wire:ignore
-                        id="reader"
-                        class="min-h-full overflow-hidden rounded-[1.6rem] bg-black text-white">
+                    <div wire:ignore id="reader"
+                        class="min-h-full overflow-hidden rounded-[1.1rem] bg-black text-white sm:rounded-[1.6rem]">
                     </div>
-
-                </div>
-
-                <!-- helper text -->
-                <div class="mt-4 text-center">
-
-                    <p class="text-sm font-medium text-slate-200">
-                        Posisikan QR Code di tengah kotak scanner
-                    </p>
-
-                    <p class="mt-1 text-xs text-slate-400">
-                        Sistem akan memproses otomatis setelah QR terbaca.
-                    </p>
-
-                    <p id="server-status" class="mt-2 hidden text-xs font-semibold text-red-400">
-                        App tidak terhubung ke server
-                    </p>
 
                 </div>
 
             </div>
 
         </div>
+
+        <!-- SIDE PANEL: instructions (stacked below scanner on mobile, side card on desktop) -->
+        <aside class="w-full max-w-xl lg:flex lg:max-w-sm lg:flex-col lg:justify-center">
+            <div
+                class="rounded-[1.5rem] border border-white/10 bg-white/10 p-5 text-center shadow-2xl backdrop-blur-xl sm:p-6 lg:text-left">
+                <div class="flex items-center justify-center gap-3 lg:justify-start">
+                    <span
+                        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-500/20 text-blue-300">
+                        <iconify-icon icon="solar:qr-code-bold" width="24" height="24"
+                            aria-hidden="true"></iconify-icon>
+                    </span>
+                    <h2 class="text-base font-bold text-white sm:text-lg">
+                        Pindai QR Kehadiran
+                    </h2>
+                </div>
+
+                <ol class="mt-4 space-y-3 text-left text-sm text-slate-300">
+                    <li class="flex gap-3">
+                        <span
+                            class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-xs font-bold text-blue-200">1</span>
+                        <span>Posisikan QR Code di tengah kotak scanner.</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span
+                            class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-xs font-bold text-blue-200">2</span>
+                        <span>Pastikan kode terlihat jelas dan tidak buram.</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span
+                            class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-xs font-bold text-blue-200">3</span>
+                        <span>Hasil absensi muncul otomatis setelah QR terbaca.</span>
+                    </li>
+                </ol>
+
+                <div
+                    class="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-white/5 px-4 py-3 text-xs text-slate-400 lg:justify-start">
+                    <iconify-icon icon="solar:shield-check-linear" width="18" height="18" aria-hidden="true"
+                        class="shrink-0 text-emerald-400"></iconify-icon>
+                    <span>Kamera hanya dipakai untuk memindai, tidak merekam.</span>
+                </div>
+            </div>
+        </aside>
     </main>
 
     <div wire:ignore data-scan-transport-host></div>
@@ -141,11 +160,10 @@
 
 </div>
 
-
 @script
     <script>
         const serverPingUrl = @json($serverPingUrl);
-        let browserRefreshVersion = @json(($siteSettings['system.browser_refresh_version'] ?? ''));
+        let browserRefreshVersion = @json($siteSettings['system.browser_refresh_version'] ?? '');
         const connectionCheckInterval = 5000;
         const connectionTimeout = 4000;
         const serverTimeAtLoad = @json(now()->timestamp * 1000);
@@ -188,12 +206,9 @@
                 return;
             }
 
-            if (isServerConnected) {
-                statusElement.classList.add('hidden');
-                return;
-            }
-
-            statusElement.classList.remove('hidden');
+            // Pill uses flex layout; toggle both classes so show/hide keeps alignment.
+            statusElement.classList.toggle('hidden', isServerConnected);
+            statusElement.classList.toggle('inline-flex', !isServerConnected);
         }
 
         function updateClock() {
@@ -248,32 +263,32 @@
                 connectionTimeout,
             );
 
-        try {
-            const response = await fetch(serverPingUrl, {
-                method: 'HEAD',
-                cache: 'no-store',
-                credentials: 'same-origin',
-                signal: connectionRequestController.signal,
-            });
+            try {
+                const response = await fetch(serverPingUrl, {
+                    method: 'HEAD',
+                    cache: 'no-store',
+                    credentials: 'same-origin',
+                    signal: connectionRequestController.signal,
+                });
 
-            if (response.status === 403) {
-                window.location.reload();
-                return;
-            }
+                if (response.status === 403) {
+                    window.location.reload();
+                    return;
+                }
 
-            if (response.status === 429) {
-                const seconds = Number(response.headers.get('Retry-After'));
-                connectionRetryAt = Date.now() + (Number.isFinite(seconds) && seconds > 0 ? seconds : 60) * 1000;
-                isServerConnected = true;
-                return;
-            }
+                if (response.status === 429) {
+                    const seconds = Number(response.headers.get('Retry-After'));
+                    connectionRetryAt = Date.now() + (Number.isFinite(seconds) && seconds > 0 ? seconds : 60) * 1000;
+                    isServerConnected = true;
+                    return;
+                }
 
-            const refreshVersion = response.headers.get('X-Browser-Refresh-Version');
-            if (response.ok && refreshVersion && refreshVersion !== browserRefreshVersion) {
-                window.location.reload();
-                return;
-            }
-            browserRefreshVersion = refreshVersion || browserRefreshVersion;
+                const refreshVersion = response.headers.get('X-Browser-Refresh-Version');
+                if (response.ok && refreshVersion && refreshVersion !== browserRefreshVersion) {
+                    window.location.reload();
+                    return;
+                }
+                browserRefreshVersion = refreshVersion || browserRefreshVersion;
 
                 isServerConnected = response.ok;
             } catch {
@@ -378,17 +393,18 @@
                     const jadwal = modal.jadwal || {};
                     element.dataset.scanResult = JSON.stringify(result);
                     for (const [name, value] of Object.entries({
-                        message: modal.message,
-                        title: modal.title,
-                        ...murid,
-                        'jadwal-label': jadwal.label,
-                        'jadwal-nama-acara': jadwal.nama_acara,
-                        'jadwal-keterangan': jadwal.keterangan,
-                        lahir: [murid.tempatLahir, murid.tanggalLahir].filter(Boolean).join(', '),
-                    })) setField(element, name, value);
+                            message: modal.message,
+                            title: modal.title,
+                            ...murid,
+                            'jadwal-label': jadwal.label,
+                            'jadwal-nama-acara': jadwal.nama_acara,
+                            'jadwal-keterangan': jadwal.keterangan,
+                            lahir: [murid.tempatLahir, murid.tanggalLahir].filter(Boolean).join(', '),
+                        })) setField(element, name, value);
 
                     const avatarInitial = element.querySelector('[data-scan-avatar-initial]');
-                    if (avatarInitial) avatarInitial.textContent = (murid.nama || '-').trim().charAt(0).toUpperCase();
+                    if (avatarInitial) avatarInitial.textContent = (murid.nama || '-').trim().charAt(0)
+                    .toUpperCase();
                     const avatarImage = element.querySelector('[data-scan-avatar-image]');
                     if (avatarImage && murid.imagePath) {
                         avatarImage.src = murid.imagePath;
@@ -414,7 +430,9 @@
                     }
                     const date = element.querySelector('[data-scan-date]');
                     if (date) date.textContent = new Intl.DateTimeFormat('id-ID', {
-                        day: '2-digit', month: 'short', year: 'numeric',
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
                     }).format(new Date());
 
                     root.querySelector('[data-scan-transport-host]').replaceChildren(element);
@@ -432,7 +450,9 @@
                         status: 'failed',
                         autoClose: true,
                         transport: true,
-                        modal: { type: 'transport' },
+                        modal: {
+                            type: 'transport'
+                        },
                     };
                     const element = renderScanModal(result);
                     if (element) scanResults.openScanResultModal(result, element);
