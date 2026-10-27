@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AccessMiddleware;
+use App\Http\Middleware\RefreshRememberCookie;
 use App\Http\Middleware\SuperAdminMiddleware;
 use App\Http\Middleware\TestTime;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['sidebar-collapsed']);
         $middleware->web(append: [
             TestTime::class,
+            RefreshRememberCookie::class,
         ]);
         $middleware->redirectGuestsTo(fn () => route('login-page'));
         $middleware->redirectUsersTo(fn () => route('home'));
