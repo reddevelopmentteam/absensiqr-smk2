@@ -56,7 +56,7 @@
                 width: 52mm !important;
                 max-width: 52mm !important;
                 margin: 0 auto !important;
-                padding: 3mm 2mm !important;
+                padding: 2mm 1mm !important;
                 box-sizing: border-box !important;
             }
 
