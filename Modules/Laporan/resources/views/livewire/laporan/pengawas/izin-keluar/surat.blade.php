@@ -128,27 +128,9 @@
 
             const qrCode = @json($qrCode);
 
-            const bytes = await generateQRPNG(qrCode);
-
-            const blob = new Blob([bytes], {
-                type: 'image/png'
-            });
-
-            const url = URL.createObjectURL(blob);
-
-            const img = document.getElementById('qrcode');
-
-            img.src = url;
-
-            img.onload = () => {
-                URL.revokeObjectURL(url);
-
-                window.print();
-                Livewire.navigate('{{ route('laporan-izin-keluar') }}');
-            };
-
             // Jalur cetak langsung ESC/POS — hanya on-click (wajib user gesture).
             // Urutan: aplikasi Android (native SPP) > WebUSB > WebBluetooth.
+            // Didaftarkan dulu supaya tetap hidup walau QR PNG gagal dimuat.
             const btn = document.getElementById('btnDirectPrint');
             const status = document.getElementById('printStatus');
             const say = (msg) => {
@@ -180,6 +162,36 @@
                         btn.disabled = false;
                     }
                 });
+            }
+
+            // QR PNG untuk jalur lama (window.print). Best-effort: QR native
+            // cetak langsung tidak butuh WASM/PNG. Tanpa navigate otomatis
+            // supaya tombol sempat diklik — wajib di aplikasi Android karena
+            // window.print() di WebView tidak membuka dialog.
+            try {
+                const bytes = await generateQRPNG(qrCode);
+
+                const blob = new Blob([bytes], {
+                    type: 'image/png'
+                });
+
+                const url = URL.createObjectURL(blob);
+
+                const img = document.getElementById('qrcode');
+
+                img.src = url;
+
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+
+                    window.print();
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                };
+            } catch (e) {
+                say('QR gambar gagal dimuat — cetak langsung tetap bisa dipakai.');
             }
 
         });

@@ -192,10 +192,14 @@
         });
     </script>
     <script>
-        if (@js($siapCetak)) {
+        // Dialog print otomatis untuk browser desktop. Tanpa navigate otomatis
+        // supaya halaman tidak kabur sendiri di WebView Android (window.print()
+        // di sana tidak membuka dialog). Navigasi balik tetap terjadi setelah
+        // tombol Cetak Langsung / Cetak Ulang ditekan.
+        if (@js($siapCetak) && typeof window.ThermalNative === 'undefined' && typeof window.ThermalPrinter ===
+            'undefined') {
             requestAnimationFrame(() => {
                 window.print();
-                Livewire.navigate(@js(route('cetak-izin-telat')));
             });
         }
     </script>
