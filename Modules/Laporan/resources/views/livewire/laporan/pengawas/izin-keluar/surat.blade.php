@@ -1,5 +1,13 @@
 @assets
     <style>
+        /* QR pratinjau: penuhi lebar struk, tetap tajam saat diperbesar */
+        #qrcode {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            image-rendering: pixelated;
+        }
+
         @media print {
             @page {
                 size: 61mm auto;
@@ -80,6 +88,7 @@
                 margin-left: auto !important;
                 margin-right: auto !important;
                 object-fit: contain;
+                image-rendering: pixelated;
             }
 
             button {
@@ -103,7 +112,7 @@
 
     <div id="printArea" class="w-[58mm] max-w-[58mm] rounded bg-white">
 
-        <div class="w-full p-3">
+        <div class="w-full px-1 py-3">
             <div class="flex w-full flex-col items-center gap-3">
                 <h1 class="text-center text-lg font-bold uppercase">
                     Surat Izin Keluar
