@@ -37,7 +37,6 @@
 
             width: 58mm !important;
             min-width: 58mm !important;
-            max-width: 58mm !important;
 
             margin: 0 !important;
 
