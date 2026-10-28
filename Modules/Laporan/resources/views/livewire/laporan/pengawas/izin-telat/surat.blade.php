@@ -1,92 +1,86 @@
 @assets
-<style>
-    @media print {
+    <style>
+        @media print {
+            @page {
+                size: 58mm auto;
+                margin: 0;
+            }
 
-        @page {
-            size: 59mm auto;
-            margin: 0;
+            html,
+            body {
+                width: 58mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #fff !important;
+            }
+
+            body {
+                display: block !important;
+            }
+
+            /* Sembunyikan seluruh halaman */
+            body * {
+                visibility: hidden;
+            }
+
+            /* Tampilkan hanya receipt */
+            #printArea,
+            #printArea * {
+                visibility: visible;
+            }
+
+            #printArea {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 58mm !important;
+                min-width: 58mm !important;
+                max-width: 58mm !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+                background: #fff !important;
+                border: none !important;
+                box-shadow: none !important;
+                font-size: 14px;
+                line-height: 1.2;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            #printArea table {
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
+            }
+
+            #printArea td {
+                vertical-align: top;
+                white-space: normal;
+                word-break: break-word;
+                overflow-wrap: anywhere;
+            }
+
+            #qrcode {
+                width: 26mm !important;
+                height: 26mm !important;
+                display: block !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                object-fit: contain;
+            }
+
+            button {
+                display: none !important;
+            }
         }
-
-        html,
-        body {
-            width: 59mm !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            background: #fff !important;
-        }
-
-        body {
-            display: block !important;
-        }
-
-        /* Sembunyikan seluruh halaman */
-        body * {
-            visibility: hidden;
-        }
-
-        /* Tampilkan hanya receipt */
-        #printArea,
-        #printArea * {
-            visibility: visible;
-        }
-
-        #printArea {
-            position: absolute !important;
-            top: 0 !important;
-
-            width: 59mm !important;
-            min-width: 59mm !important;
-
-            margin: 0 !important;
-
-            box-sizing: border-box !important;
-
-            background: #fff !important;
-            border: none !important;
-            box-shadow: none !important;
-
-            font-size: 14px;
-            line-height: 1.2;
-
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        #printArea table {
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-        }
-
-        #printArea td {
-            vertical-align: top;
-            white-space: normal;
-            word-break: break-word;
-            overflow-wrap: anywhere;
-        }
-
-        #qrcode {
-            width: 26mm !important;
-            height: 26mm !important;
-            display: block !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
-            object-fit: contain;
-        }
-
-        button {
-            display: none !important;
-        }
-    }
-</style>
+    </style>
 @endassets
 
 <div class="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-2">
-    <button type="button" onclick="window.print()" class="mb-5 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">Cetak Ulang</button>
+    <button type="button" onclick="window.print()"
+        class="mb-5 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">Cetak Ulang</button>
 
-    <div
-        id="printArea"
-        class="min-w-[59mm] rounded bg-white flex justify-center">
+    <div id="printArea" class="w-[58mm] max-w-[58mm] rounded bg-white">
 
         <div class="w-full p-3">
 
@@ -136,12 +130,12 @@
 </div>
 
 @script
-<script>
-    if (@js($siapCetak)) {
-        requestAnimationFrame(() => {
-            window.print();
-            Livewire.navigate(@js(route('cetak-izin-telat')));
-        });
-    }
-</script>
+    <script>
+        if (@js($siapCetak)) {
+            requestAnimationFrame(() => {
+                window.print();
+                Livewire.navigate(@js(route('cetak-izin-telat')));
+            });
+        }
+    </script>
 @endscript
