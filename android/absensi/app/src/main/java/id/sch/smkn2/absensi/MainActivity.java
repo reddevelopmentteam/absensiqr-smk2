@@ -41,6 +41,7 @@ import java.util.Arrays;
 
 public final class MainActivity extends Activity {
     private static final int CAMERA_REQUEST = 10;
+    private ThermalPrinterBridge printerBridge;
     private WebView webView;
     private FrameLayout root;
     private LinearLayout errorPanel;
@@ -84,9 +85,11 @@ public final class MainActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        settings.setUserAgentString(settings.getUserAgentString() + " AbsensiAndroid/1");
         CookieManager.getInstance().setAcceptCookie(true);
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, false);
+        // Jembatan cetak thermal: hanya aktif di origin server Absensi (lihat ScannerClient).
+        printerBridge = new ThermalPrinterBridge(this, webView);
+        webView.addJavascriptInterface(printerBridge, "ThermalPrinter");
         webView.setWebViewClient(new ScannerClient());
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -328,6 +331,12 @@ public final class MainActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int code, String[] permissions, int[] results) {
         super.onRequestPermissionsResult(code, permissions, results);
+        if (code == ThermalPrinterBridge.PERMISSION_REQUEST) {
+            boolean granted = results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED;
+            if (printerBridge != null) printerBridge.onPermissionResult(granted);
+            enterFullscreen();
+            return;
+        }
         if (code != CAMERA_REQUEST) return;
         askingCamera = false;
         if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) {

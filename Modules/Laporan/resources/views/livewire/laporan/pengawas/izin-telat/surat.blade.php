@@ -80,8 +80,16 @@
 @endassets
 
 <div class="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-2">
-    <button type="button" onclick="window.print()"
-        class="mb-5 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">Cetak Ulang</button>
+    <div class="mb-5 flex flex-col items-center gap-2">
+        <div class="flex gap-2">
+            <button type="button" onclick="window.print()"
+                class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">Cetak Ulang</button>
+            <button type="button" id="btnDirectPrint"
+                class="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700 disabled:opacity-50">Cetak
+                Langsung</button>
+        </div>
+        <span id="printStatus" class="text-sm text-gray-600"></span>
+    </div>
 
     <div id="printArea" class="w-[58mm] max-w-[58mm] rounded bg-white">
 
@@ -133,6 +141,56 @@
 </div>
 
 @script
+    <script type="module">
+        Promise.all([
+            import('{{ Vite::asset('resources/js/thermal/escpos.js') }}'),
+            import('{{ Vite::asset('resources/js/thermal/transport-usb.js') }}'),
+            import('{{ Vite::asset('resources/js/thermal/transport-bt.js') }}'),
+            import('{{ Vite::asset('resources/js/thermal/transport-native.js') }}'),
+            import('{{ Vite::asset('resources/js/thermal/surat-payload.js') }}'),
+        ]).then(() => {
+            // Jalur cetak langsung ESC/POS — hanya on-click (wajib user gesture).
+            // Urutan: aplikasi Android (native SPP) > WebUSB > WebBluetooth.
+            const btn = document.getElementById('btnDirectPrint');
+            const status = document.getElementById('printStatus');
+            const say = (msg) => {
+                if (status) status.textContent = msg;
+            };
+            const hasNative = window.ThermalNative && window.ThermalNative.isSupported();
+            const supported = hasNative || 'usb' in navigator || 'bluetooth' in navigator;
+            if (!supported) {
+                if (btn) btn.disabled = true;
+                say('Browser tidak mendukung cetak langsung — gunakan Cetak Ulang.');
+            }
+            if (btn && supported) {
+                btn.addEventListener('click', async () => {
+                    try {
+                        btn.disabled = true;
+                        say('Menghubungkan…');
+                        const payload = window.SuratPayload.buildIzinTelatBytes({
+                            nama: @js($absen->murid->nama),
+                            alasan: @js($absen->keterangan),
+                            tanggal: @js(now()->locale('id')->translatedFormat('d F Y')),
+                            jam: @js(now()->locale('id')->translatedFormat('H:i:s')),
+                            pengawas: @js(auth()->user()->name),
+                        });
+                        if (hasNative) {
+                            await window.ThermalNative.sendBytes(payload);
+                        } else if ('usb' in navigator) {
+                            await window.ThermalUsb.sendBytes(payload);
+                        } else {
+                            await window.ThermalBt.sendBytes(payload);
+                        }
+                        say('Tercetak.');
+                        Livewire.navigate(@js(route('cetak-izin-telat')));
+                    } catch (e) {
+                        say('Gagal: ' + (e?.message ?? e) + ' — gunakan Cetak Ulang.');
+                        btn.disabled = false;
+                    }
+                });
+            }
+        });
+    </script>
     <script>
         if (@js($siapCetak)) {
             requestAnimationFrame(() => {
