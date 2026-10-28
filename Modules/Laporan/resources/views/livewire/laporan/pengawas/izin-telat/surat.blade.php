@@ -2,13 +2,13 @@
     <style>
         @media print {
             @page {
-                size: 58mm auto;
+                size: 61mm auto;
                 margin: 0;
             }
 
             html,
             body {
-                width: 58mm !important;
+                width: 61mm !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 background: #fff !important;
@@ -34,8 +34,8 @@
                 top: 0 !important;
                 left: 0 !important;
                 right: 0 !important;
-                width: 58mm !important;
-                max-width: 58mm !important;
+                width: 61mm !important;
+                max-width: 61mm !important;
                 margin: 0 auto !important;
                 padding: 0 !important;
                 display: flex !important;
@@ -44,16 +44,16 @@
                 background: #fff !important;
                 border: none !important;
                 box-shadow: none !important;
-                font-size: 14px;
+                font-size: 16px;
                 line-height: 1.2;
                 page-break-inside: avoid;
                 break-inside: avoid;
             }
 
-            /* Lebar cetak thermal 58mm, dipusatkan supaya sisa kertas kiri-kanan seimbang */
+            /* Lebar cetak 61mm (+3mm kompensasi penyusutan aplikasi), dipusatkan supaya sisa kertas kiri-kanan seimbang */
             #printArea>div {
-                width: 58mm !important;
-                max-width: 58mm !important;
+                width: 61mm !important;
+                max-width: 61mm !important;
                 margin: 0 auto !important;
                 padding: 1mm 0mm !important;
                 box-sizing: border-box !important;
@@ -87,18 +87,18 @@
 
         <div class="w-[58mm] p-3">
 
-            <h1 class="mt-2 mb-3 text-center text-sm font-bold uppercase">
+            <h1 class="mt-2 mb-3 text-center text-[16px] font-bold uppercase">
                 Surat Izin Telat
             </h1>
 
             <div class="flex flex-col space-y-2">
 
-                <div class="text-sm">
+                <div class="text-[16px]">
                     <p class="font-semibold">Nama :</p>
                     <p>{{ $absen->murid->nama }}</p>
                 </div>
 
-                <div class="text-sm">
+                <div class="text-[16px]">
                     <p class="font-semibold">Alasan Terlambat :</p>
                     <p class="whitespace-pre-line break-words">{{ $absen->keterangan }}</p>
                 </div>
@@ -108,7 +108,7 @@
             <div class="my-4 border border-dotted"></div>
 
             <div class="flex justify-end">
-                <div class="w-28 text-center text-sm">
+                <div class="w-28 text-center text-[16px]">
 
                     <p class="font-semibold mb-1">
                         {{ now()->locale('id')->locale('id')->translatedFormat('d F Y') }}<br>

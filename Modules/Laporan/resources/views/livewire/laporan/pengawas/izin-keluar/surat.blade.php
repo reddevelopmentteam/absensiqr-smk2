@@ -2,13 +2,13 @@
     <style>
         @media print {
             @page {
-                size: 58mm auto;
+                size: 61mm auto;
                 margin: 0;
             }
 
             html,
             body {
-                width: 58mm !important;
+                width: 61mm !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 background: #fff !important;
@@ -34,8 +34,8 @@
                 top: 0 !important;
                 left: 0 !important;
                 right: 0 !important;
-                width: 58mm !important;
-                max-width: 58mm !important;
+                width: 61mm !important;
+                max-width: 61mm !important;
                 margin: 0 auto !important;
                 padding: 0 !important;
                 display: flex !important;
@@ -50,10 +50,10 @@
                 break-inside: avoid;
             }
 
-            /* Lebar cetak thermal 58mm, dipusatkan supaya sisa kertas kiri-kanan seimbang */
+            /* Lebar cetak 61mm (+3mm kompensasi penyusutan aplikasi), dipusatkan supaya sisa kertas kiri-kanan seimbang */
             #printArea>div {
-                width: 58mm !important;
-                max-width: 58mm !important;
+                width: 61mm !important;
+                max-width: 61mm !important;
                 margin: 0 auto !important;
                 padding: 1mm 0mm !important;
                 box-sizing: border-box !important;
