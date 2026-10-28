@@ -55,7 +55,7 @@
                 width: 58mm !important;
                 max-width: 58mm !important;
                 margin: 0 auto !important;
-                padding: 2mm 1mm !important;
+                padding: 1mm 0mm !important;
                 box-sizing: border-box !important;
             }
 
@@ -70,15 +70,6 @@
                 white-space: normal;
                 word-break: break-word;
                 overflow-wrap: anywhere;
-            }
-
-            #qrcode {
-                width: 26mm !important;
-                height: 26mm !important;
-                display: block !important;
-                margin-left: auto !important;
-                margin-right: auto !important;
-                object-fit: contain;
             }
 
             button {
