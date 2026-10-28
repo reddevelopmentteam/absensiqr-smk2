@@ -33,10 +33,13 @@
                 position: absolute !important;
                 top: 0 !important;
                 left: 0 !important;
+                right: 0 !important;
                 width: 58mm !important;
-                min-width: 58mm !important;
                 max-width: 58mm !important;
-                margin: 0 !important;
+                margin: 0 auto !important;
+                padding: 0 !important;
+                display: flex !important;
+                justify-content: center !important;
                 box-sizing: border-box !important;
                 background: #fff !important;
                 border: none !important;
@@ -45,6 +48,16 @@
                 line-height: 1.2;
                 page-break-inside: avoid;
                 break-inside: avoid;
+            }
+
+            /* Lebar aman cetak thermal 58mm (±48-52mm area cetak),
+                   dipusatkan supaya sisa kertas kiri-kanan seimbang */
+            #printArea>div {
+                width: 52mm !important;
+                max-width: 52mm !important;
+                margin: 0 auto !important;
+                padding: 3mm 2mm !important;
+                box-sizing: border-box !important;
             }
 
             #printArea table {
