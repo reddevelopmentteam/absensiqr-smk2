@@ -85,7 +85,7 @@
 
     <div id="printArea" class="w-[58mm] max-w-[58mm] rounded bg-white">
 
-        <div class="w-full p-3">
+        <div class="w-[58mm] p-3">
 
             <h1 class="mt-2 mb-3 text-center text-sm font-bold uppercase">
                 Surat Izin Telat
