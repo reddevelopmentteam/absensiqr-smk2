@@ -87,7 +87,7 @@
 
         <div class="w-full p-3">
 
-            <h1 class="mb-3 text-center text-sm font-bold uppercase">
+            <h1 class="mt-2 mb-3 text-center text-sm font-bold uppercase">
                 Surat Izin Telat
             </h1>
 
