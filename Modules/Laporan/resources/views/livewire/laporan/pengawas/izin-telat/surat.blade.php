@@ -3,13 +3,13 @@
     @media print {
 
         @page {
-            size: 58mm auto;
+            size: 59mm auto;
             margin: 0;
         }
 
         html,
         body {
-            width: 58mm !important;
+            width: 59mm !important;
             margin: 0 !important;
             padding: 0 !important;
             background: #fff !important;
@@ -34,8 +34,8 @@
             position: absolute !important;
             top: 0 !important;
 
-            width: 58mm !important;
-            min-width: 58mm !important;
+            width: 59mm !important;
+            min-width: 59mm !important;
 
             margin: 0 !important;
 
@@ -86,7 +86,7 @@
 
     <div
         id="printArea"
-        class="min-w-[58mm] rounded bg-white flex justify-center">
+        class="min-w-[59mm] rounded bg-white flex justify-center">
 
         <div class="w-full p-3">
 
