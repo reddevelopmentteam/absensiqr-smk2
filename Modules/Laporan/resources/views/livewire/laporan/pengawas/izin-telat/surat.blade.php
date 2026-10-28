@@ -52,7 +52,7 @@
 
             /* Lebar cetak thermal 58mm, dipusatkan supaya sisa kertas kiri-kanan seimbang */
             #printArea>div {
-                width: 56mm !important;
+                width: 58mm !important;
                 max-width: 58mm !important;
                 margin: 0 auto !important;
                 padding: 2mm 1mm !important;
