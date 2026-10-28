@@ -88,22 +88,22 @@
 
     <div
         id="printArea"
-        class="w-[58mm] rounded bg-white">
+        class="min-w-[58mm] rounded bg-white">
 
-        <div class="w-full border-2 p-3">
+        <div class="w-full p-3">
 
-            <h1 class="mb-3 text-center text-[12px] font-bold uppercase">
+            <h1 class="mb-3 text-center text-sm font-bold uppercase">
                 Surat Izin Telat
             </h1>
 
             <div class="flex flex-col space-y-2">
 
-                <div class="text-[12px]">
+                <div class="text-sm">
                     <p class="font-semibold">Nama :</p>
                     <p>{{ $absen->murid->nama }}</p>
                 </div>
 
-                <div class="text-[12px]">
+                <div class="text-sm">
                     <p class="font-semibold">Alasan Terlambat :</p>
                     <p class="whitespace-pre-line break-words">{{ $absen->keterangan }}</p>
                 </div>
@@ -113,7 +113,7 @@
             <div class="my-4 border border-dotted"></div>
 
             <div class="flex justify-end">
-                <div class="w-28 text-center text-[12px]">
+                <div class="w-28 text-center text-sm">
 
                     <p class="font-semibold mb-1">
                         {{ now()->locale('id')->locale('id')->translatedFormat('d F Y') }}<br>
