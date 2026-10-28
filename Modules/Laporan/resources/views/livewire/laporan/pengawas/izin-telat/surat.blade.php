@@ -33,7 +33,6 @@
         #printArea {
             position: absolute !important;
             top: 0 !important;
-            left: 0 !important;
 
             width: 58mm !important;
             min-width: 58mm !important;
@@ -46,7 +45,7 @@
             border: none !important;
             box-shadow: none !important;
 
-            font-size: 10px;
+            font-size: 14px;
             line-height: 1.2;
 
             page-break-inside: avoid;
@@ -87,7 +86,7 @@
 
     <div
         id="printArea"
-        class="min-w-[58mm] rounded bg-white">
+        class="min-w-[58mm] rounded bg-white flex justify-center">
 
         <div class="w-full p-3">
 
