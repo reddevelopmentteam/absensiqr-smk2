@@ -1,10 +1,13 @@
 @assets
     <style>
-        /* QR pratinjau: penuhi lebar struk, tetap tajam saat diperbesar */
+        /* QR pratinjau: full-bleed 61mm selebar kertas, tanpa gap kiri-kanan */
         #qrcode {
-            width: 100%;
-            height: auto;
+            width: 61mm !important;
+            max-width: 61mm !important;
+            height: auto !important;
             aspect-ratio: 1 / 1;
+            display: block !important;
+            margin: 0 auto !important;
             image-rendering: pixelated;
         }
 
@@ -58,12 +61,12 @@
                 break-inside: avoid;
             }
 
-            /* Lebar cetak 61mm (+3mm kompensasi penyusutan aplikasi), dipusatkan supaya sisa kertas kiri-kanan seimbang */
+            /* Lebar cetak 61mm (+3mm kompensasi penyusutan aplikasi), tanpa gap kiri-kanan supaya QR full-bleed */
             #printArea>div {
                 width: 61mm !important;
                 max-width: 61mm !important;
                 margin: 0 auto !important;
-                padding: 1mm 0mm !important;
+                padding: 0 !important;
                 box-sizing: border-box !important;
             }
 
@@ -108,14 +111,14 @@
         <span id="printStatus" class="text-sm text-gray-600"></span>
     </div>
 
-    <div id="printArea" class="w-[58mm] max-w-[58mm] rounded bg-white">
+    <div id="printArea" class="w-[61mm] max-w-[61mm] rounded bg-white">
 
-        <div class="w-full px-0 py-3">
-            <div class="flex w-full flex-col items-center gap-3">
-                <h1 class="text-center text-lg font-bold uppercase">
+        <div class="w-[61mm] max-w-[61mm] px-0 py-0">
+            <div class="flex w-full flex-col items-center gap-1">
+                <h1 class="py-2 text-center text-lg font-bold uppercase">
                     Surat Izin Keluar
                 </h1>
-                <img id="qrcode" class="object-contain" alt="QR Code Surat Izin Keluar">
+                <img id="qrcode" class="block w-[61mm] max-w-[61mm] object-contain" alt="QR Code Surat Izin Keluar">
             </div>
         </div>
 
