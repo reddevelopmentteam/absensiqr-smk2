@@ -114,12 +114,10 @@
     <div id="printArea" class="w-[61mm] max-w-[61mm] rounded bg-white">
 
         <div class="w-[61mm] max-w-[61mm] px-0 py-0">
-            <div class="flex w-full flex-col items-center gap-1">
-                <h1 class="py-2 text-center text-lg font-bold uppercase">
-                    Surat Izin Keluar
-                </h1>
-                <img id="qrcode" class="block w-[61mm] max-w-[61mm] object-contain" alt="QR Code Surat Izin Keluar">
-            </div>
+            <h1 class="py-2 text-center text-lg font-bold uppercase">
+                Surat Izin Keluar
+            </h1>
+            <img id="qrcode" class="block w-[61mm] max-w-[61mm] object-contain" alt="QR Code Surat Izin Keluar">
         </div>
 
     </div>
