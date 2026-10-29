@@ -128,7 +128,7 @@
 
                     <div class="h-16"></div>
 
-                    <div class="border-t border-black pt-1">
+                    <div class="border-t border-black pt-1 pb-2">
                         {{ auth()->user()->name }}
                     </div>
 

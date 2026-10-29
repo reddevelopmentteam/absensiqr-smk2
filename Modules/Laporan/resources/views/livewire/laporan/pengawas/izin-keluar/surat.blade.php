@@ -82,8 +82,8 @@
 
             /* QR */
             #qrcode {
-                width: 58mm !important;
-                height: 58mm !important;
+                width: 61mm !important;
+                height: 61mm !important;
                 display: block !important;
                 margin-left: auto !important;
                 margin-right: auto !important;
