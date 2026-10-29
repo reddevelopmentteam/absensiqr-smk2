@@ -32,7 +32,17 @@ Route::prefix('mpanel')->middleware('auth')->group(function () {
         ? 'card/kartu-pelajar-vertical.html'
         : 'card/kartu-pelajar-horizontal.html';
 
-        return response(Storage::disk('local')->get($fileName), 200, [
+        $html = Storage::disk('local')->get($fileName);
+
+        if ($orientation === 'vertical') {
+            static $motifDataUrl;
+            $motifDataUrl ??= 'data:image/png;base64,'.base64_encode(
+                file_get_contents(public_path('assets/img/motif-kartu.png'))
+            );
+            $html = str_replace('__MOTIF_DATA__', $motifDataUrl, $html);
+        }
+
+        return response($html, 200, [
             'Content-Type' => 'text/html; charset=utf-8',
             // The card markup is static; caching avoids a request on every run.
             'Cache-Control' => 'private, max-age=86400, stale-while-revalidate=604800',

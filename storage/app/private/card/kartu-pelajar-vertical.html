@@ -201,6 +201,19 @@
         aria-hidden="true"
       >
         <defs>
+          <pattern
+            id="motifPat"
+            patternUnits="userSpaceOnUse"
+            width="324"
+            height="204"
+          >
+            <image
+              href="__MOTIF_DATA__"
+              width="324"
+              height="204"
+              preserveAspectRatio="none"
+            />
+          </pattern>
           <linearGradient
             id="archOuter"
             x1="-18"
@@ -242,6 +255,13 @@
         </defs>
         <g clip-path="url(#cardClip)">
           <rect width="204" height="324" rx="8" fill="white" />
+          <rect
+            opacity="0.9"
+            width="324"
+            height="204"
+            transform="matrix(0 -1 -1 0 204 324)"
+            fill="url(#motifPat)"
+          />
           <ellipse
             cx="100.5"
             cy="-9.66666"
