@@ -21,246 +21,155 @@
         padding: 24px;
       }
 
+      /* 204 x 324 (SVG acuan) diskala 3x = 612 x 972 */
       .student-card {
         position: relative;
-        width: 540px;
-        height: 800px;
+        width: 612px;
+        height: 972px;
         overflow: hidden;
         border-radius: 24px;
-        background: linear-gradient(
-          135deg,
-          #ffffff 0%,
-          #eef5ff 58%,
-          #d7e9ff 100%
-        );
-        border: 3px solid #082d63;
-
-        contain:layout paint;
+        background: #ffffff;
       }
 
-      .shape-top-right {
+      /* Latar hijau (lengkung atas + ombak bawah) persis SVG acuan */
+      .card-bg {
         position: absolute;
-        top: -80px;
-        right: -120px;
-        width: 300px;
-        height: 240px;
-        background: linear-gradient(135deg, #0b6fdc, #08245c);
-        transform: skewX(28deg);
-        z-index: 1;
-      }
-
-      .shape-bottom {
-        position: absolute;
-        left: 0;
-        bottom: 0;
+        inset: 0;
         width: 100%;
-        height: 50px;
-        background: #05275c;
-        z-index: 1;
+        height: 100%;
+        display: block;
       }
 
       .card-content {
-        position: relative;
+        position: absolute;
+        inset: 0;
         z-index: 2;
-        height: 100%;
-        padding: 28px 36px;
-      }
-
-      .header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        text-align: center;
       }
 
       .school-logo {
-        width: 108px;
-        height: 108px;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ffffff;
-        text-align: center;
-        font-weight: 800;
-        font-size: 13px;
+        position: absolute;
+        top: 33px;
+        left: 260px;
+        width: 90px;
+        height: 87px;
       }
 
       .school-logo img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
+      }
+
+      .school-title {
+        position: absolute;
+        top: 145px;
+        left: 0;
+        right: 0;
       }
 
       .school-title h1 {
-        color: #06275e;
-        font-size: 25px;
-        font-weight: 900;
-        text-transform: uppercase;
+        color: #ffffff;
+        font-size: 32px;
+        font-weight: 800;
+        line-height: 1.1;
+        white-space: nowrap;
       }
 
       .school-title p {
-        color:#0a86e9 ;
-        font-size: 12px;
-        font-weight: 800;
-        text-transform: uppercase;
-      }
-
-      .label-title {
-        position: absolute;
-        top: 178px;
-        left: 272px;
-        background: #08275d;
+        margin-top: 33px;
         color: #ffffff;
-        padding: 13px 48px;
-        border-radius: 4px;
-        font-size: 27px;
-        font-weight: 900;
-        letter-spacing: 5px;
-        text-transform: uppercase;
-        box-shadow: 0 10px 18px rgba(0, 35, 90, 0.18);
+        font-size: 24px;
+        font-weight: 400;
       }
 
-      .label-title::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: -42px;
-        width: 70px;
-        height: 100%;
-        background: linear-gradient(90deg, #0a86e9, #5fc7ff);
-        clip-path: polygon(28% 0, 100% 0, 72% 100%, 0 100%);
-      }
-
-      .student-photo-container {
-        padding-top: 15px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
       .student-photo {
-        height: 500px;
-        width: 375px;
-
-        border-radius: 18px;
-        overflow: hidden;
-        background: linear-gradient(#1972ce, #e8f1ff);
-        border: 7px solid #ffffff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        position: absolute;
+        top: 276px;
+        left: 228px;
+        width: 153px;
+        height: 192px;
+        background: #d7e9ff;
+        border-radius: 24px;
+        box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);
       }
 
       .student-photo img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        position: relative;
-      }
-
-      .photo-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ffffff;
-        font-weight: 800;
-        text-align: center;
-        padding: 20px;
-        line-height: 1.4;
-      }
-
-      .student-info {
-        text-align: center;
-        margin-top: 10px;
-      }
-
-      .info-row {
-        display: grid;
-        grid-template-columns: 44px 118px 18px 1fr;
-        align-items: center;
-        min-height: 50px;
-        border-bottom: 1px solid rgba(5, 39, 92, 0.18);
-        color: #111827;
-      }
-
-      .icon {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: #0b4fa8;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ffffff;
-        font-size: 17px;
-        font-weight: 800;
-        padding: 5px;
-      }
-
-      .separator {
-        font-weight: 900;
-        color: #05275c;
-      }
-
-      .info-value {
-        font-size: 16px;
-        font-weight: 900;
-        text-transform: uppercase;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2 ;
-        ;
+        border-radius: 24px;
+        border: 6px solid #f1f1f1;
+        background: #d7e9ff;
       }
 
       .student-name {
-        font-size: 18px;
-        font-weight: 1000;
-        text-transform: uppercase;
-        margin-bottom: 10px;
+        position: absolute;
+        top: 486px;
+        left: 40px;
+        right: 40px;
+        color: #111111;
+        font-size: 23px;
+        font-weight: 700;
+        line-height: 1.25;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
       }
 
-      .qr-section {
+      .student-meta {
         position: absolute;
-        right: 83px;
-        bottom: 148px;
+        top: 540px;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        color: #111111;
+        font-size: 17px;
+        font-weight: 400;
+        white-space: nowrap;
       }
+
+      .meta-divider {
+        width: 1px;
+        height: 30px;
+        background: #000000;
+      }
+      .meta-rule {
+        position: absolute;
+        top: 522px;
+        left: 186px;
+        width: 240px;
+        height: 1px;
+        background: #000000;
+      }
+
 
       .qr-box {
-        width: 200px;
-        height: 200px;
-        padding: 10px;
-        margin: 0 auto;
+        position: absolute;
+        top: 584px;
+        left: 154px;
+        width: 306px;
+        height: 312px;
+        padding: 19px 13px 17px 17px;
         background: #ffffff;
-        border-radius: 5px;
+        border: 3px solid #000000;
+        border-radius: 22px;
       }
 
       .qr-box img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
-      }
-
-      .qr-eye {
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 42px;
-        height: 42px;
-        background: #ffffff;
-        border: 10px solid #000000;
-        box-shadow:
-          inset 0 0 0 7px #ffffff,
-          inset 0 0 0 16px #000000;
+        object-fit: contain;
       }
 
       @media print {
         body {
           background: #ffffff;
           padding: 0;
-        }
-
-        .student-card {
-          box-shadow: none;
         }
       }
 
@@ -285,38 +194,106 @@
   </head>
   <body>
     <main class="student-card">
-      <div class="shape-top-right"></div>
-      <div class="shape-bottom"></div>
+      <svg
+        class="card-bg"
+        viewBox="0 0 204 324"
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient
+            id="archOuter"
+            x1="-18"
+            y1="-9.66666"
+            x2="219"
+            y2="-9.66666"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0.490385" stop-color="#0DC425" />
+            <stop offset="1" stop-color="#065E0C" />
+          </linearGradient>
+          <linearGradient
+            id="archInner"
+            x1="-18"
+            y1="-23.3333"
+            x2="219"
+            y2="-23.3333"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#0DC425" />
+            <stop offset="0.35" stop-color="#065E0C" />
+            <stop offset="0.65" stop-color="#065E0C" />
+            <stop offset="1" stop-color="#0DC425" />
+          </linearGradient>
+          <linearGradient
+            id="waveGrad"
+            x1="288.5"
+            y1="282.096"
+            x2="-81.5"
+            y2="282.096"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0.490385" stop-color="#0DC425" />
+            <stop offset="1" stop-color="#065E0C" />
+          </linearGradient>
+          <clipPath id="cardClip">
+            <rect width="204" height="324" rx="8" fill="white" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#cardClip)">
+          <rect width="204" height="324" rx="8" fill="white" />
+          <ellipse
+            cx="100.5"
+            cy="-9.66666"
+            rx="118.5"
+            ry="136.667"
+            fill="url(#archOuter)"
+          />
+          <ellipse
+            cx="100.5"
+            cy="-23.3333"
+            rx="118.5"
+            ry="136.667"
+            fill="url(#archInner)"
+          />
+          <path
+            d="M-81.5 296.026C-81.5 268.412 1.3273 306.596 103.5 306.596C205.673 306.596 288.5 268.412 288.5 296.026C288.5 323.641 205.673 332.096 103.5 332.096C1.3273 332.096 -81.5 323.641 -81.5 296.026Z"
+            fill="url(#waveGrad)"
+          />
+          <path
+            d="M-84 301.526C-84 273.912 1.32733 310.596 103.5 310.596C205.673 310.596 288.5 273.912 288.5 301.526C288.5 329.141 205.673 336.096 103.5 336.096C1.32733 336.096 -84 329.141 -84 301.526Z"
+            fill="#065E0C"
+          />
+        </g>
+      </svg>
 
       <section class="card-content">
-        <header class="header">
-          <div class="school-logo">
-            <img src="__LOGO__" alt="Logo SMKN 2 Banjarmasin">
-          </div>
+        <div class="school-logo">
+          <img src="__LOGO__" alt="Logo SMKN 2 Banjarmasin" />
+        </div>
 
-          <div class="school-title">
-            <h1>SMKN 2 <span style="color: rgb(239, 209, 16);" >Banjarmasin</span></h1>
-            <p>Jl. Brigjend H. Hasan Basri No. 6</p>
-          </div>
-        </header>
+        <div class="school-title">
+          <h1>SMKN 2 Banjarmasin</h1>
+          <p>Kartu Pelajar</p>
+        </div>
 
-        <aside class="student-photo-container">
-            <div class="student-photo">
-                <img src="__PHOTO__" alt="Foto Murid">
-                <section class="qr-section">
-                  <div class="qr-box">
-                    <img src="__QR__" alt="QR Code Murid">
-                  </div>
-                </section>
-            </div>
+        <aside class="student-photo">
+          <img src="__PHOTO__" alt="Foto Murid" />
         </aside>
 
-        <section class="student-info">
-            <!-- name -->
-            <div class="student-name">__STUDENT_NAME__</div>
-            <div class="info-value">__NISN__</div>
-        </section>
+        <div class="student-name">__STUDENT_NAME__</div>
+        <span style="display: none">__JURUSAN__</span>
 
+        <div class="student-meta">
+          <span>__KELAS__</span>
+          <span class="meta-divider"></span>
+          <span>__NISN__</span>
+        </div>
+        <div class="meta-rule"></div>
+
+        <div class="qr-box">
+          <img src="__QR__" alt="QR Code Murid" />
+        </div>
       </section>
     </main>
   </body>
