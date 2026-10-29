@@ -83,7 +83,8 @@
     <div class="mb-5 flex flex-col items-center gap-2">
         <div class="flex gap-2">
             <button type="button" onclick="window.print()"
-                class="rounded bg-blue-600 transition-all duration-150 hover:bg-blue-700 active:scale-95 px-4 py-2 text-white">Cetak Ulang</button>
+                class="rounded bg-blue-600 transition-all duration-150 hover:bg-blue-700 active:scale-95 px-4 py-2 text-white">Cetak
+                Ulang</button>
             <button type="button" id="btnDirectPrint"
                 class="rounded bg-green-600 transition-all duration-150 hover:bg-green-700 active:scale-95 px-4 py-2 text-white disabled:opacity-50">Cetak
                 Langsung</button>
@@ -116,7 +117,7 @@
             <div class="my-4 border border-dotted"></div>
 
             <div class="flex justify-end">
-                <div class="w-28 text-center text-[16px]">
+                <div class="w-40 max-w-full text-center text-[16px]">
 
                     <p class="font-semibold mb-1">
                         {{ now()->locale('id')->locale('id')->translatedFormat('d F Y') }}<br>
@@ -128,8 +129,8 @@
 
                     <div class="h-16"></div>
 
-                    <div class="border-t border-black pt-1">
-                        {{ auth()->user()->name }}
+                    <div class="border-t border-black pt-1 break-words [overflow-wrap:anywhere]">
+                        ({{ auth()->user()->name }})
                     </div>
 
                     <div class="h-8"></div>

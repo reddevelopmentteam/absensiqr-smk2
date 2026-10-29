@@ -52,7 +52,7 @@
                 background: #fff !important;
                 border: none !important;
                 box-shadow: none !important;
-                font-size: 14px;
+                font-size: 16px;
                 line-height: 1.2;
                 page-break-inside: avoid;
                 break-inside: avoid;
@@ -110,7 +110,7 @@
 
     <div id="printArea" class="w-[58mm] max-w-[58mm] rounded bg-white">
 
-        <div class="w-full px-1 py-3">
+        <div class="w-full px-0 py-3">
             <div class="flex w-full flex-col items-center gap-3">
                 <h1 class="text-center text-lg font-bold uppercase">
                     Surat Izin Keluar
