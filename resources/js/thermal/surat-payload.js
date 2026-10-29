@@ -34,11 +34,10 @@ function buildIzinKeluarBytes(qrCodeString) {
         E.ALIGN_LT,
         rule(),
         E.textLine(''),
-        E.feed(3),
+        E.feed(5),
         E.CUT,
     );
 }
-
 /**
  * Surat Izin Telat: teks saja, mirror blok HTML (nama + alasan wrap 32
  * kolom + garis + blok ttd tanggal/jam WITA + pengawas).

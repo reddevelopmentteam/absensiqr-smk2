@@ -68,7 +68,7 @@
                 width: 61mm !important;
                 max-width: 61mm !important;
                 margin: 0 auto !important;
-                padding: 1mm 0mm !important;
+                padding: 1mm 0mm 6mm !important;
                 box-sizing: border-box !important;
             }
 
