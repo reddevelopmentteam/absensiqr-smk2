@@ -85,8 +85,6 @@
                 width: 61mm !important;
                 height: 61mm !important;
                 display: block !important;
-                margin-left: auto !important;
-                margin-right: auto !important;
                 object-fit: contain;
                 image-rendering: pixelated;
             }
@@ -102,9 +100,9 @@
     <div class="mb-5 flex flex-col items-center gap-2">
         <div class="flex gap-2">
             <button type="button" onclick="window.print()"
-                class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">Print</button>
+                class="rounded bg-blue-600 transition-all duration-150 hover:bg-blue-700 active:scale-95 px-4 py-2 text-white ">Print</button>
             <button type="button" id="btnDirectPrint"
-                class="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700 disabled:opacity-50">Cetak
+                class="rounded bg-green-600 transition-all duration-150 hover:bg-green-700 active:scale-95 px-4 py-2 text-white disabled:opacity-50">Cetak
                 Langsung</button>
         </div>
         <span id="printStatus" class="text-sm text-gray-600"></span>
