@@ -72,7 +72,8 @@ function textLine(str) {
 
 /**
  * Perintah QR native printer: GS ( k (bukan raster PNG).
- * Model 2, EC level M (0x31), dot size 6 — muat di 32 kolom.
+ * Model 2, EC level M (0x31), dot size 10 — 37 modul x 10 dot = 370 dot,
+ * pas penuh di kertas 58mm (384 dot), sisa putih kiri-kanan ~1mm.
  */
 function qrNative(payload) {
     const data = encodeText(payload);
@@ -81,7 +82,7 @@ function qrNative(payload) {
     const pH = (len >> 8) & 0xff;
     return concat(
         [0x1d, 0x28, 0x6b, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00], // model 2
-        [0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x43, 0x06], // size 6
+        [0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x43, 0x0a], // size 10 (full-width 58mm)
         [0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x45, 0x31], // EC level M
         [0x1d, 0x28, 0x6b, pL, pH, 0x31, 0x50, 0x30],
         data, // store

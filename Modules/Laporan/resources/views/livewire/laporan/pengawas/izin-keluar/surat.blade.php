@@ -1,13 +1,15 @@
 @assets
     <style>
-        /* QR pratinjau: full-bleed 61mm selebar kertas, tanpa gap kiri-kanan */
+        /* QR: selebar garis dotted di bawahnya (keduanya ikut lebar konten) */
         #qrcode {
-            width: 61mm !important;
-            max-width: 61mm !important;
+            width: 100% !important;
+            max-width: 100% !important;
             height: auto !important;
             aspect-ratio: 1 / 1;
             display: block !important;
-            margin: 0 auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 0 !important;
             image-rendering: pixelated;
         }
 
@@ -61,12 +63,12 @@
                 break-inside: avoid;
             }
 
-            /* Lebar cetak 61mm (+3mm kompensasi penyusutan aplikasi), tanpa gap kiri-kanan supaya QR full-bleed */
+            /* Lebar cetak 61mm (+3mm kompensasi penyusutan aplikasi), dipusatkan supaya sisa kertas kiri-kanan seimbang */
             #printArea>div {
                 width: 61mm !important;
                 max-width: 61mm !important;
                 margin: 0 auto !important;
-                padding: 0 !important;
+                padding: 1mm 0mm !important;
                 box-sizing: border-box !important;
             }
 
@@ -83,11 +85,16 @@
                 overflow-wrap: anywhere;
             }
 
-            /* QR */
+            /* QR cetak: ikut lebar konten (= selebar garis dotted), tanpa letterbox */
             #qrcode {
-                width: 61mm !important;
-                height: 61mm !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 1 / 1;
                 display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: 0 !important;
                 object-fit: contain;
                 image-rendering: pixelated;
             }
@@ -111,16 +118,18 @@
         <span id="printStatus" class="text-sm text-gray-600"></span>
     </div>
 
-    <div id="printArea" class="w-[61mm] max-w-[61mm] rounded bg-white">
+    <div id="printArea" class="w-[58mm] max-w-[58mm] rounded bg-white">
 
-        <div class="w-[61mm] max-w-[61mm] px-0 py-0">
-            <h1 class="py-2 text-center text-lg font-bold uppercase">
+        <div class="w-[58mm] px-1 py-3">
+            <h1 class="mt-2 mb-3 text-center text-[16px] font-bold uppercase">
                 Surat Izin Keluar
             </h1>
-            <img id="qrcode" class="block w-[61mm] max-w-[61mm] object-contain" alt="QR Code Surat Izin Keluar">
-        </div>
+            <img id="qrcode" class="block w-full" alt="QR Code Surat Izin Keluar">
 
+            <div class="my-4 border border-dotted"></div>
+        </div>
     </div>
+
 </div>
 
 @script
