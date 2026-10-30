@@ -25,13 +25,18 @@ Route::get('/mpanel', function () {
 Route::prefix('mpanel')->middleware('auth')->group(function () {
 
     Route::get('/card-template/{orientation}', function (Request $request, string $orientation) {
-        if (! in_array($orientation, ['horizontal', 'vertical'], true)) {
+        $templateFiles = [
+            'horizontal' => 'card/kartu-pelajar-horizontal.html',
+            'vertical' => 'card/kartu-pelajar-vertical.html',
+            'horizontal-belakang' => 'card/kartu-pelajar-belakang-horizontal.html',
+            'vertical-belakang' => 'card/kartu-pelajar-belakang-vertical.html',
+        ];
+
+        if (! array_key_exists($orientation, $templateFiles)) {
             abort(404);
         }
 
-        $fileName = $orientation === 'vertical'
-        ? 'card/kartu-pelajar-vertical.html'
-        : 'card/kartu-pelajar-horizontal.html';
+        $fileName = $templateFiles[$orientation];
 
         $html = Storage::disk('local')->get($fileName);
 

@@ -38,6 +38,7 @@ const CONFIG = {
         selector: ".student-card",
         scale: 0.75,
         logoUrl: "/assets/img/logo_smkn_2.png",
+        backLogoUrl: "/assets/img/logo-belakang.png",
         frameWidth: 1000,
         frameHeight: 1000,
         transparentPixel: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
@@ -85,6 +86,16 @@ const revokeObjectUrl = (url) => {
 const normalizeOrientation = (orientation) => (
     orientation === "vertical" ? "vertical" : "horizontal"
 );
+
+const BACK_KEY_SUFFIX = "-belakang";
+
+const isBackKey = (key) => typeof key === "string" && key.endsWith(BACK_KEY_SUFFIX);
+
+const baseOrientationOf = (key) => normalizeOrientation(
+    isBackKey(key) ? key.slice(0, -BACK_KEY_SUFFIX.length) : key
+);
+
+const backKeyOf = (orientation) => `${normalizeOrientation(orientation)}${BACK_KEY_SUFFIX}`;
 
 const getCardSize = (orientation = "horizontal") => {
     const base = CONFIG.CARD.horizontal;
@@ -541,30 +552,30 @@ class TemplateLoader {
     }
 
     async fetchTemplate(orientation) {
-        const normalizedOrientation = normalizeOrientation(orientation);
+        const key = isBackKey(orientation) ? orientation : normalizeOrientation(orientation);
 
-        if (this.templateCache.has(normalizedOrientation)) {
-            return this.templateCache.get(normalizedOrientation);
+        if (this.templateCache.has(key)) {
+            return this.templateCache.get(key);
         }
 
-        if (templateRequestCache.has(normalizedOrientation)) {
-            return templateRequestCache.get(normalizedOrientation);
+        if (templateRequestCache.has(key)) {
+            return templateRequestCache.get(key);
         }
 
-        const request = fetchText(CONFIG.TEMPLATE.route(normalizedOrientation), {
+        const request = fetchText(CONFIG.TEMPLATE.route(key), {
             cache: "no-cache"
         });
 
-        templateRequestCache.set(normalizedOrientation, request);
+        templateRequestCache.set(key, request);
 
         try {
             const template = await request;
 
-            this.templateCache.set(normalizedOrientation, template);
+            this.templateCache.set(key, template);
 
             return template;
         } finally {
-            templateRequestCache.delete(normalizedOrientation);
+            templateRequestCache.delete(key);
         }
     }
 
@@ -677,8 +688,8 @@ class TemplateLoader {
     }
 
     async createSession(orientation) {
-        const normalizedOrientation = normalizeOrientation(orientation);
-        const template = await this.fetchTemplate(normalizedOrientation);
+        const key = isBackKey(orientation) ? orientation : normalizeOrientation(orientation);
+        const template = await this.fetchTemplate(key);
         const frame = this.createFrame();
         const loadPromise = waitForFrameLoad(frame);
 
@@ -697,34 +708,35 @@ class TemplateLoader {
             frame,
             doc,
             card,
+            isBack: isBackKey(key),
             refs: this.collectSessionRefs(doc)
         };
 
         await this.waitForFonts(doc);
 
-        this.sessions.set(normalizedOrientation, session);
+        this.sessions.set(key, session);
 
         return session;
     }
 
     async getSession(orientation) {
-        const normalizedOrientation = normalizeOrientation(orientation);
-        const session = this.sessions.get(normalizedOrientation);
+        const key = isBackKey(orientation) ? orientation : normalizeOrientation(orientation);
+        const session = this.sessions.get(key);
 
         if (session?.frame?.isConnected) return session;
 
-        if (this.sessionRequests.has(normalizedOrientation)) {
-            return this.sessionRequests.get(normalizedOrientation);
+        if (this.sessionRequests.has(key)) {
+            return this.sessionRequests.get(key);
         }
 
-        const request = this.createSession(normalizedOrientation)
+        const request = this.createSession(key)
             .finally(() => {
-                if (this.sessionRequests.get(normalizedOrientation) === request) {
-                    this.sessionRequests.delete(normalizedOrientation);
+                if (this.sessionRequests.get(key) === request) {
+                    this.sessionRequests.delete(key);
                 }
             });
 
-        this.sessionRequests.set(normalizedOrientation, request);
+        this.sessionRequests.set(key, request);
 
         return request;
     }
@@ -777,6 +789,12 @@ class TemplateLoader {
         return this.logoDataUrlPromise;
     }
 
+    getBackLogoDataUrl() {
+        this.backLogoDataUrlPromise ??= Promise.resolve(getImageSource(CONFIG.TEMPLATE.backLogoUrl));
+
+        return this.backLogoDataUrlPromise;
+    }
+
     async getPrefetchedPhotoSource(source) {
         if (!source || source.startsWith("data:")) {
             return source;
@@ -798,6 +816,14 @@ class TemplateLoader {
     }
 
     async applyData(session, { murid, qrSvg }) {
+        if (session.isBack) {
+            const backLogoDataUrl = await this.getBackLogoDataUrl();
+
+            await this.setImageSource(session.refs.logoImage, backLogoDataUrl);
+
+            return null;
+        }
+
         const [photoSource, logoDataUrl] = await Promise.all([
             this.getPrefetchedPhotoSource(getImageSource(murid?.image_path ?? null)),
             this.getLogoDataUrl()
@@ -870,11 +896,46 @@ class TemplateLoader {
         }
     }
 
+    async renderBackCanvas({ orientation = "horizontal" } = {}) {
+        const backKey = backKeyOf(orientation);
+        const cacheKey = JSON.stringify({ back: backKey });
+
+        if (canvasCache.has(cacheKey)) return canvasCache.get(cacheKey);
+
+        const session = await this.getSession(backKey);
+
+        await this.applyData(session, {});
+
+        session.renderContext ??= await createContext(session.card, {
+            autoDestruct: false,
+            font: false,
+            backgroundColor: CONFIG.PDF.backgroundColor,
+            scale: CONFIG.TEMPLATE.scale,
+            width: session.card.offsetWidth,
+            height: session.card.offsetHeight,
+            fetch: {
+                requestInit: { mode: "cors", cache: "force-cache" },
+                placeholderImage: CONFIG.TEMPLATE.transparentPixel
+            }
+        });
+
+        const canvas = await domToCanvas(session.renderContext);
+
+        cacheRenderedCanvas(cacheKey, canvas);
+
+        return canvas;
+    }
+
     async preload(orientations = ["horizontal"]) {
-        const uniqueOrientations = [...new Set(orientations.map(normalizeOrientation))];
+        const uniqueOrientations = [...new Set(orientations.flatMap((orientation) => {
+            const normalizedOrientation = normalizeOrientation(orientation);
+
+            return isBackKey(orientation) ? [orientation] : [normalizedOrientation, backKeyOf(normalizedOrientation)];
+        }))];
 
         await Promise.allSettled([
             this.getLogoDataUrl(),
+            this.getBackLogoDataUrl(),
             ...uniqueOrientations.map((orientation) => this.getSession(orientation))
         ]);
     }
@@ -891,6 +952,7 @@ class TemplateLoader {
         this.sessions.clear();
         this.sessionRequests.clear();
         this.logoDataUrlPromise = null;
+        this.backLogoDataUrlPromise = null;
     }
 }
 
@@ -952,6 +1014,37 @@ class PdfManager {
             orientation: normalizedOrientation,
             position: this.nextPosition(entry)
         });
+    }
+
+    async addBackPage({ key = "default", canvas, orientation = "horizontal" }) {
+        if (!canvas) return;
+
+        const baseOrientation = baseOrientationOf(orientation);
+        const entry = this.resolveEntry(key, baseOrientation);
+        const size = getCardSize(baseOrientation);
+        const pageWidth = entry.pdf.internal.pageSize.getWidth();
+        const pageHeight = entry.pdf.internal.pageSize.getHeight();
+
+        entry.pdf.addPage();
+        entry.grid = getPdfGrid(entry.pdf, entry.orientation);
+        entry.cursor = 0;
+
+        const jpegBytes = await canvasToJpegBytes(canvas);
+
+        if (!jpegBytes) throw new Error("Unable to create PDF image from back card canvas.");
+
+        entry.pdf.addImage(
+            jpegBytes,
+            CONFIG.PDF.imageFormat,
+            (pageWidth - size.width) / 2,
+            (pageHeight - size.height) / 2,
+            size.width,
+            size.height,
+            undefined,
+            CONFIG.PDF.compression
+        );
+
+        releaseRenderedCanvas(canvas);
     }
 
     export() {
@@ -1061,12 +1154,21 @@ const renderStudentCanvas = async ({ murid, qrSvg, orientation = "horizontal" })
 });
 
 const createSingleCardPdfBytes = async ({ canvas, orientation = "horizontal" }) => {
+    const normalizedOrientation = normalizeOrientation(orientation);
     const manager = new PdfManager();
 
     await manager.addCard({
         key: "single",
         canvas,
-        orientation
+        orientation: normalizedOrientation
+    });
+
+    const backCanvas = await templateLoader.renderBackCanvas({ orientation: normalizedOrientation });
+
+    await manager.addBackPage({
+        key: "single",
+        canvas: backCanvas,
+        orientation: normalizedOrientation
     });
 
     return manager.export()[0]?.pdfBytes ?? null;
@@ -1107,6 +1209,14 @@ const downloadGeneratedStudentCardPdf = async ({ murid, orientation = "horizonta
     await manager.addCard({
         key: murid?.rombel?.nama_lengkap ?? "Kelas",
         canvas,
+        orientation: normalizedOrientation
+    });
+
+    const backCanvas = await templateLoader.renderBackCanvas({ orientation: normalizedOrientation });
+
+    await manager.addBackPage({
+        key: murid?.rombel?.nama_lengkap ?? "Kelas",
+        canvas: backCanvas,
         orientation: normalizedOrientation
     });
 
@@ -1190,9 +1300,21 @@ const generateStudentCardsBatch = async ({
         }
     }
 
+    for (const key of manager.entries.keys()) {
+        const orientationForKey = manager.entries.get(key)?.orientation ?? normalizedOrientation;
+        // eslint-disable-next-line no-await-in-loop
+        const backCanvas = await templateLoader.renderBackCanvas({ orientation: orientationForKey });
+
+        // eslint-disable-next-line no-await-in-loop
+        await manager.addBackPage({
+            key,
+            canvas: backCanvas,
+            orientation: orientationForKey
+        });
+    }
+
     return manager.exportAsync();
 };
-
 /**
  * Render a batch of student cards and immediately download one PDF per
  * class (grouped by rombel).
@@ -1265,6 +1387,25 @@ window.addStudentCardToPdf = async ({ className, canvas, orientation = "horizont
     });
 };
 
+/**
+ * Render one back card and append it as the final page of a class PDF.
+ *
+ * @param {Object} options
+ * @param {string} options.className
+ * @param {"horizontal"|"vertical"} [options.orientation]
+ * @returns {Promise<void>}
+ */
+window.appendStudentCardBackPage = async ({ className, orientation = "horizontal" } = {}) => {
+    if (!className) return;
+
+    const backCanvas = await templateLoader.renderBackCanvas({ orientation });
+
+    await pdfManager.addBackPage({
+        key: className,
+        canvas: backCanvas,
+        orientation
+    });
+};
 /**
  * Export accumulated student card PDFs.
  *

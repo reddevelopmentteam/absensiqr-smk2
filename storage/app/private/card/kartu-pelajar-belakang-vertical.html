@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ID CARD SMKN 2 Banjarmasin - Belakang</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #d8e6f7;
+        padding: 24px;
+      }
+
+      /* 204 x 324 (SVG acuan) diskala 3x = 612 x 972 */
+      .student-card {
+        position: relative;
+        width: 612px;
+        height: 972px;
+        overflow: hidden;
+        border-radius: 24px;
+        background: #ffffff;
+      }
+
+      /* Latar hijau (lengkung atas + ombak bawah) + motif persis SVG acuan */
+      .card-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .card-content {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+      }
+
+      .school-logo {
+        position: absolute;
+        top: 411px;
+        left: 240px;
+        width: 135px;
+        height: 132px;
+      }
+
+      .school-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .school-name {
+        position: absolute;
+        top: 569px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #111111;
+        font-size: 34px;
+        font-weight: 800;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .school-address {
+        position: absolute;
+        top: 629px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #111111;
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+      }
+
+      @media print {
+        body {
+          background: #ffffff;
+          padding: 0;
+        }
+      }
+
+      @media (max-width: 940px) {
+        .student-card {
+          transform: scale(0.78);
+        }
+      }
+
+      @media (max-width: 720px) {
+        body {
+          align-items: flex-start;
+          padding: 12px;
+        }
+
+        .student-card {
+          transform: scale(0.56);
+          transform-origin: top center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="student-card">
+      <svg
+        class="card-bg"
+        viewBox="0 0 204 324"
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+      >
+        <defs>
+          <pattern
+            id="motifPat"
+            patternUnits="userSpaceOnUse"
+            width="324"
+            height="204"
+          >
+            <image
+              href="__MOTIF_DATA__"
+              width="324"
+              height="204"
+              preserveAspectRatio="none"
+            />
+          </pattern>
+          <linearGradient
+            id="archOuter"
+            x1="-18"
+            y1="-61.6667"
+            x2="219"
+            y2="-61.6667"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0.490385" stop-color="#0DC425" />
+            <stop offset="1" stop-color="#065E0C" />
+          </linearGradient>
+          <linearGradient
+            id="archInner"
+            x1="-18"
+            y1="-71.3333"
+            x2="219"
+            y2="-71.3333"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#0DC425" />
+            <stop offset="0.35" stop-color="#065E0C" />
+            <stop offset="0.65" stop-color="#065E0C" />
+            <stop offset="1" stop-color="#0DC425" />
+          </linearGradient>
+          <linearGradient
+            id="waveGrad"
+            x1="288.5"
+            y1="282.096"
+            x2="-81.5"
+            y2="282.096"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0.490385" stop-color="#0DC425" />
+            <stop offset="1" stop-color="#065E0C" />
+          </linearGradient>
+          <clipPath id="cardClip">
+            <rect width="204" height="324" rx="8" fill="white" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#cardClip)">
+          <rect width="204" height="324" rx="8" fill="white" />
+          <rect
+            opacity="0.4"
+            width="324"
+            height="204"
+            transform="matrix(0 -1 -1 0 204 324)"
+            fill="url(#motifPat)"
+          />
+          <ellipse
+            cx="100.5"
+            cy="-61.6667"
+            rx="118.5"
+            ry="136.667"
+            fill="url(#archOuter)"
+          />
+          <ellipse
+            cx="100.5"
+            cy="-71.3333"
+            rx="118.5"
+            ry="136.667"
+            fill="url(#archInner)"
+          />
+          <path
+            d="M-81.5 296.026C-81.5 268.412 1.3273 306.596 103.5 306.596C205.673 306.596 288.5 268.412 288.5 296.026C288.5 323.641 205.673 332.096 103.5 332.096C1.3273 332.096 -81.5 323.641 -81.5 296.026Z"
+            fill="url(#waveGrad)"
+          />
+          <path
+            d="M-84 301.526C-84 273.912 1.32733 310.596 103.5 310.596C205.673 310.596 288.5 273.912 288.5 301.526C288.5 329.141 205.673 336.096 103.5 336.096C1.32733 336.096 -84 329.141 -84 301.526Z"
+            fill="#065E0C"
+          />
+        </g>
+      </svg>
+
+      <section class="card-content">
+        <div class="school-logo">
+          <img src="__LOGO__" alt="Logo SMKN 2 Banjarmasin" />
+        </div>
+
+        <div class="school-name">SMKN 2 Banjarmasin</div>
+
+        <div class="school-address">
+          JL. BRIGJEND H. HASAN BASRI NO.6. BANJARMASIN - KALIMANTAN SELATAN 70123
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

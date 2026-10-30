@@ -410,7 +410,7 @@
             let totalData = 0;
             let currentRunId = null;
             let cardsSinceYield = 0;
-
+            let appendedBackPages = new Set();
             let zip = null;
             let zipChunks = [];
 
@@ -419,6 +419,7 @@
                 totalData = 0;
                 cardsSinceYield = 0;
                 zipChunks = [];
+                appendedBackPages = new Set();
 
                 progressTextMurid.textContent = '0/0';
                 progressPercentMurid.textContent = '0%';
@@ -618,11 +619,19 @@
 
                     if (processed >= totalData) {
                         await yieldToBrowser(true);
+                        const orientation = event.orientation ?? 'horizontal';
+                        for (const murid of dataMurid) {
+                            const className = murid?.rombel?.nama_lengkap ?? 'Kelas';
+                            if (!appendedBackPages.has(className)) {
+                                appendedBackPages.add(className);
+                                await window.appendStudentCardBackPage?.({ className, orientation });
+                                await yieldToBrowser(true);
+                            }
+                        }
                         const pdfFiles = await (
                             window.exportStudentCardPdfsAsync?.() ??
                             Promise.resolve(window.exportStudentCardPdfs?.() ?? [])
                         );
-                        await yieldToBrowser(true);
 
                         if (pdfFiles.length === 1) {
                             const single = pdfFiles[0];
