@@ -39,6 +39,9 @@ const CONFIG = {
         scale: 0.75,
         logoUrl: "/assets/img/logo_smkn_2.png",
         backLogoUrl: "/assets/img/logo-belakang.png",
+        motifUrl: "/assets/img/motif-kartu.png",
+        fullMotifWidth: 204,
+        fullMotifHeight: 324,
         frameWidth: 1000,
         frameHeight: 1000,
         transparentPixel: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
@@ -216,27 +219,35 @@ const prefetchPhoto = (murid) => {
     };
 
     entry.promise = (async () => {
-        const response = await fetch(src, {
-            cache: "force-cache",
-            mode: "cors"
-        });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-        if (!response.ok) {
-            throw new Error(`Unable to fetch image ${src}: ${response.status} ${response.statusText}`);
+        try {
+            const response = await fetch(src, {
+                cache: "force-cache",
+                mode: "cors",
+                signal: controller.signal
+            });
+
+            if (!response.ok) {
+                throw new Error(`Unable to fetch image ${src}: ${response.status} ${response.statusText}`);
+            }
+
+            const blob = await response.blob();
+
+            const objectUrl = URL.createObjectURL(blob);
+
+            if (photoPrefetchCache.get(src) !== entry) {
+                revokeObjectUrl(objectUrl);
+                return null;
+            }
+
+            entry.objectUrl = objectUrl;
+
+            return objectUrl;
+        } finally {
+            clearTimeout(timeoutId);
         }
-
-        const blob = await response.blob();
-
-        const objectUrl = URL.createObjectURL(blob);
-
-        if (photoPrefetchCache.get(src) !== entry) {
-            revokeObjectUrl(objectUrl);
-            return null;
-        }
-
-        entry.objectUrl = objectUrl;
-
-        return objectUrl;
     })().catch(() => {
         photoFailureCache.add(src);
         if (entry.objectUrl) {
@@ -549,9 +560,11 @@ class TemplateLoader {
         this.sessions = new Map();
         this.sessionRequests = new Map();
         this.logoDataUrlPromise = null;
+        this.backLogoDataUrlPromise = null;
+        this.motifDataUrlPromise = null;
     }
 
-    async fetchTemplate(orientation) {
+    async fetchTemplate(orientation, { retries = 2 } = {}) {
         const key = isBackKey(orientation) ? orientation : normalizeOrientation(orientation);
 
         if (this.templateCache.has(key)) {
@@ -562,9 +575,29 @@ class TemplateLoader {
             return templateRequestCache.get(key);
         }
 
-        const request = fetchText(CONFIG.TEMPLATE.route(key), {
-            cache: "no-cache"
-        });
+        const request = (async () => {
+            let lastError = null;
+
+            for (let attempt = 0; attempt <= retries; attempt += 1) {
+                try {
+                    const template = await fetchText(CONFIG.TEMPLATE.route(key), {
+                        cache: "no-cache"
+                    });
+
+                    // Server baru sudah injeksi motif; server lama masih
+                    // serving file mentah dengan placeholder __MOTIF_DATA__
+                    // — tambal di client agar kartu tetap bermotif.
+                    return await this.withClientMotifFallback(template);
+                } catch (error) {
+                    lastError = error;
+
+                    // eslint-disable-next-line no-await-in-loop
+                    await new Promise((resolve) => setTimeout(resolve, 400 * (attempt + 1)));
+                }
+            }
+
+            throw lastError ?? new Error(`Unable to fetch template for ${key}.`);
+        })();
 
         templateRequestCache.set(key, request);
 
@@ -574,8 +607,43 @@ class TemplateLoader {
             this.templateCache.set(key, template);
 
             return template;
-        } finally {
+        } catch (error) {
             templateRequestCache.delete(key);
+            throw error;
+        } finally {
+            if (templateRequestCache.get(key) === request) {
+                templateRequestCache.delete(key);
+            }
+        }
+    }
+
+    async withClientMotifFallback(template) {
+        if (!template || !template.includes("__MOTIF_DATA__")) return template;
+
+        try {
+            this.motifDataUrlPromise ??= (async () => {
+                const response = await fetch(CONFIG.TEMPLATE.motifUrl, { cache: "force-cache" });
+
+                if (!response.ok) throw new Error(`Motif fetch failed: ${response.status}`);
+
+                const blob = await response.blob();
+
+                return await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => reject(new Error("Unable to read motif blob."));
+                    reader.readAsDataURL(blob);
+                });
+            })();
+
+            const motifDataUrl = await this.motifDataUrlPromise;
+
+            return template.replaceAll("__MOTIF_DATA__", motifDataUrl);
+        } catch {
+            this.motifDataUrlPromise = null;
+
+            return template;
         }
     }
 
@@ -741,36 +809,77 @@ class TemplateLoader {
         return request;
     }
 
-    async setImageSource(image, source) {
+    async setImageSource(image, source, { retries = 1, timeoutMs = 5000 } = {}) {
         if (!image) return;
 
         const fallbackSource = CONFIG.TEMPLATE.transparentPixel;
-        const nextSource = photoFailureCache.has(source) ? fallbackSource : source || fallbackSource;
 
-        if (image.getAttribute("src") !== nextSource) {
-            if (nextSource.startsWith("blob:")) {
+        if (!source || photoFailureCache.has(source)) {
+            if (image.getAttribute("src") !== fallbackSource) {
                 image.removeAttribute("crossorigin");
-            } else if (!nextSource.startsWith("data:")) {
+                image.decoding = "async";
+                image.setAttribute("src", fallbackSource);
+                await waitForImage(image);
+            }
+
+            return;
+        }
+
+        for (let attempt = 0; attempt <= retries; attempt += 1) {
+            if (source.startsWith("blob:")) {
+                image.removeAttribute("crossorigin");
+            } else if (!source.startsWith("data:")) {
                 image.crossOrigin = "anonymous";
             } else {
                 image.removeAttribute("crossorigin");
             }
 
             image.decoding = "async";
-            image.setAttribute("src", nextSource);
-        }
+            image.setAttribute("src", source);
 
-        const loaded = await withTimeout(waitForImage(image), 600);
+            // eslint-disable-next-line no-await-in-loop
+            const loaded = await withTimeout(waitForImage(image), timeoutMs);
 
-        if (!loaded) {
-            if (nextSource !== fallbackSource) {
-                photoFailureCache.add(source);
-                image.removeAttribute("crossorigin");
+            if (loaded) return;
+
+            // Timeout murni (gambar belum selesai, bukan error): beri jeda
+            // singkat lalu cek naturalWidth sekali lagi sebelum memutuskan
+            // retry/poison. Ini menangani decode() lambat untuk PNG besar
+            // (logo 363KB) tanpa membanjiri server dengan request retry.
+            if (image.naturalWidth > 0) return;
+
+            if (image.complete) break;
+
+            // Masih loading setelah timeout: retry sekali dengan URL segar
+            // untuk mengalahkan cache browser yang macet. Source TIDAK di-
+            // poison di sini — lambat kali ini belum tentu rusak.
+            if (attempt < retries && !source.startsWith("data:") && !source.startsWith("blob:")) {
+                const separator = source.includes("?") ? "&" : "?";
+
+                image.removeAttribute("src");
+
+                // eslint-disable-next-line no-await-in-loop
+                await new Promise((resolve) => setTimeout(resolve, 300 * (attempt + 1)));
+
                 image.decoding = "async";
-                image.setAttribute("src", fallbackSource);
-                await waitForImage(image);
+                image.setAttribute("src", `${source}${separator}retry=${attempt + 1}`);
+
+                // eslint-disable-next-line no-await-in-loop
+                const retryLoaded = await withTimeout(waitForImage(image), timeoutMs);
+
+                if (retryLoaded || image.naturalWidth > 0) return;
+
+                if (image.complete) break;
             }
         }
+
+        // Definitive failure after retries (HTTP error, decode error, decode
+        // timeout): poison + transparent fallback so later renders don't stall.
+        photoFailureCache.add(source);
+        image.removeAttribute("crossorigin");
+        image.decoding = "async";
+        image.setAttribute("src", fallbackSource);
+        await waitForImage(image);
     }
 
     setText(node, value) {
@@ -810,7 +919,7 @@ class TemplateLoader {
             return entry.objectUrl;
         }
 
-        const prefetched = await withTimeout(entry.promise, 400);
+        const prefetched = await withTimeout(entry.promise, 5000);
 
         return prefetched || source;
     }
@@ -953,6 +1062,7 @@ class TemplateLoader {
         this.sessionRequests.clear();
         this.logoDataUrlPromise = null;
         this.backLogoDataUrlPromise = null;
+        this.motifDataUrlPromise = null;
     }
 }
 
@@ -1153,6 +1263,20 @@ const renderStudentCanvas = async ({ murid, qrSvg, orientation = "horizontal" })
     qrSvg
 });
 
+const appendBackPageBestEffort = async (manager, { key, orientation }) => {
+    try {
+        const backCanvas = await templateLoader.renderBackCanvas({ orientation });
+
+        await manager.addBackPage({
+            key,
+            canvas: backCanvas,
+            orientation
+        });
+    } catch (error) {
+        console.warn("Skipping card back page; front pages are unaffected.", error);
+    }
+};
+
 const createSingleCardPdfBytes = async ({ canvas, orientation = "horizontal" }) => {
     const normalizedOrientation = normalizeOrientation(orientation);
     const manager = new PdfManager();
@@ -1163,13 +1287,7 @@ const createSingleCardPdfBytes = async ({ canvas, orientation = "horizontal" }) 
         orientation: normalizedOrientation
     });
 
-    const backCanvas = await templateLoader.renderBackCanvas({ orientation: normalizedOrientation });
-
-    await manager.addBackPage({
-        key: "single",
-        canvas: backCanvas,
-        orientation: normalizedOrientation
-    });
+    await appendBackPageBestEffort(manager, { key: "single", orientation: normalizedOrientation });
 
     return manager.export()[0]?.pdfBytes ?? null;
 };
@@ -1212,11 +1330,8 @@ const downloadGeneratedStudentCardPdf = async ({ murid, orientation = "horizonta
         orientation: normalizedOrientation
     });
 
-    const backCanvas = await templateLoader.renderBackCanvas({ orientation: normalizedOrientation });
-
-    await manager.addBackPage({
+    await appendBackPageBestEffort(manager, {
         key: murid?.rombel?.nama_lengkap ?? "Kelas",
-        canvas: backCanvas,
         orientation: normalizedOrientation
     });
 
@@ -1302,15 +1417,9 @@ const generateStudentCardsBatch = async ({
 
     for (const key of manager.entries.keys()) {
         const orientationForKey = manager.entries.get(key)?.orientation ?? normalizedOrientation;
-        // eslint-disable-next-line no-await-in-loop
-        const backCanvas = await templateLoader.renderBackCanvas({ orientation: orientationForKey });
 
         // eslint-disable-next-line no-await-in-loop
-        await manager.addBackPage({
-            key,
-            canvas: backCanvas,
-            orientation: orientationForKey
-        });
+        await appendBackPageBestEffort(manager, { key, orientation: orientationForKey });
     }
 
     return manager.exportAsync();
@@ -1398,13 +1507,17 @@ window.addStudentCardToPdf = async ({ className, canvas, orientation = "horizont
 window.appendStudentCardBackPage = async ({ className, orientation = "horizontal" } = {}) => {
     if (!className) return;
 
-    const backCanvas = await templateLoader.renderBackCanvas({ orientation });
+    try {
+        const backCanvas = await templateLoader.renderBackCanvas({ orientation });
 
-    await pdfManager.addBackPage({
-        key: className,
-        canvas: backCanvas,
-        orientation
-    });
+        await pdfManager.addBackPage({
+            key: className,
+            canvas: backCanvas,
+            orientation
+        });
+    } catch (error) {
+        console.warn("Skipping card back page; front pages are unaffected.", error);
+    }
 };
 /**
  * Export accumulated student card PDFs.
