@@ -552,7 +552,7 @@ class TemplateLoader {
         }
 
         const request = fetchText(CONFIG.TEMPLATE.route(normalizedOrientation), {
-            cache: "force-cache"
+            cache: "no-cache"
         });
 
         templateRequestCache.set(normalizedOrientation, request);
