@@ -21,286 +21,179 @@
         padding: 24px;
       }
 
+      /* 324 x 204 (SVG acuan) diskala 3x = 972 x 612 */
       .student-card {
         position: relative;
-        width: 900px;
-        height: 540px;
+        width: 972px;
+        height: 612px;
         overflow: hidden;
         border-radius: 24px;
-        background: linear-gradient(
-          135deg,
-          #ffffff 0%,
-          #eef5ff 58%,
-          #d7e9ff 100%
-        );
-        border: 3px solid #082d63;
-
-        contain:layout paint;
+        background: #ffffff;
       }
 
-      .student-card::before {
-        content: "";
+      /* Latar hijau (lengkung atas + ombak bawah) + motif persis SVG acuan */
+      .card-bg {
         position: absolute;
         inset: 0;
-        background:
-          linear-gradient(rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.78)),
-          linear-gradient(135deg, #ffffff 0%, #eef5ff 58%, #d7e9ff 100%);
-        background-size: cover;
-        background-position: center;
-        opacity: 0.45;
-        z-index: 0;
-      }
-
-      .shape-top-right {
-        position: absolute;
-        top: -80px;
-        right: -120px;
-        width: 300px;
-        height: 240px;
-        background: linear-gradient(135deg, #0b6fdc, #08245c);
-        transform: skewX(28deg);
-        z-index: 1;
-      }
-
-      .shape-bottom {
-        position: absolute;
-        left: 0;
-        bottom: 0;
         width: 100%;
-        height: 80px;
-        background: #05275c;
-        z-index: 1;
+        height: 100%;
+        display: block;
       }
 
       .card-content {
-        position: relative;
+        position: absolute;
+        inset: 0;
         z-index: 2;
-        height: 100%;
-        padding: 28px 36px;
-      }
-
-      .header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
       }
 
       .school-logo {
-        width: 108px;
-        height: 108px;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ffffff;
-        text-align: center;
-        font-weight: 800;
-        font-size: 13px;
+        position: absolute;
+        top: 21px;
+        left: 261px;
+        width: 72px;
+        height: 69px;
       }
 
       .school-logo img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
+      }
+
+      .school-title {
+        position: absolute;
+        top: 32px;
+        left: 348px;
+        white-space: nowrap;
       }
 
       .school-title h1 {
-        color: #06275e;
-        font-size: 42px;
-        letter-spacing: 2px;
-        font-weight: 900;
-        text-transform: uppercase;
-      }
-
-      .school-title p {
-        margin-top: 4px;
-        color: #1761ae;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-
-      .motto {
-        position: absolute;
-        top: 40px;
-        right: 30px;
         color: #ffffff;
-        font-size: 18px;
-        line-height: 1.2;
-        text-align: right;
-        font-style: italic;
-        z-index: 3;
-      }
-
-      .motto span {
-        color: #f8cf28;
+        font-size: 30px;
         font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: 0.5px;
       }
 
-      .label-title {
+      .kartu-title {
         position: absolute;
-        top: 178px;
-        left: 272px;
-        background: #08275d;
-        color: #ffffff;
-        padding: 13px 48px;
-        border-radius: 4px;
-        font-size: 27px;
-        font-weight: 900;
-        letter-spacing: 5px;
-        text-transform: uppercase;
-        box-shadow: 0 10px 18px rgba(0, 35, 90, 0.18);
-      }
-
-      .label-title::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: -42px;
-        width: 70px;
-        height: 100%;
-        background: linear-gradient(90deg, #0a86e9, #5fc7ff);
-        clip-path: polygon(28% 0, 100% 0, 72% 100%, 0 100%);
+        top: 164px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #111111;
+        font-size: 34px;
+        font-weight: 800;
+        line-height: 1.2;
       }
 
       .student-photo {
         position: absolute;
-        left: 36px;
-        top: 178px;
-        width: 230px;
-        height: 305px;
-        border-radius: 18px;
-        overflow: hidden;
-        background: linear-gradient(#1972ce, #e8f1ff);
-        border: 7px solid #ffffff;
-        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+        top: 225px;
+        left: 48px;
+        width: 240px;
+        height: 300px;
+        background: #d7e9ff;
+        border-radius: 24px;
+        box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);
       }
 
       .student-photo img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-      }
-
-      .photo-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ffffff;
-        font-weight: 800;
-        text-align: center;
-        padding: 20px;
-        line-height: 1.4;
-      }
-
-      .student-info {
-        position: absolute;
-        left: 300px;
-        top: 252px;
-        width: 300px;
-      }
-
-      .info-row {
-        display: grid;
-        grid-template-columns: 44px 118px 18px 1fr;
-        align-items: center;
-        min-height: 50px;
-        border-bottom: 1px solid rgba(5, 39, 92, 0.18);
-        color: #111827;
-      }
-
-      .icon {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: #0b4fa8;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ffffff;
-        font-size: 17px;
-        font-weight: 800;
-        padding: 5px;
-      }
-
-      .info-label {
-        font-size: 14px;
-        font-weight: 800;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-      }
-
-      .separator {
-        font-weight: 900;
-        color: #05275c;
-      }
-
-      .info-value {
-        font-size: 12px;
-        font-weight: 900;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2 ;
-        ;
+        border-radius: 24px;
+        border: 6px solid #f1f1f1;
+        background: #d7e9ff;
       }
 
       .student-name {
-        font-size: 16px;
-        font-weight: 1000;
-        text-transform: uppercase;
-        margin-bottom: 10px;
+        position: absolute;
+        top: 266px;
+        left: 303px;
+        width: 300px;
+        color: #111111;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.25;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
-      .qr-section {
+      .meta-rule {
         position: absolute;
-        right: 70px;
-        top: 250px;
-        width: 200px;
+        left: 303px;
+        width: 300px;
+        height: 1px;
+        background: #000000;
+      }
+
+      .meta-rule.rule-1 {
+        top: 315px;
+      }
+
+      .meta-rule.rule-2 {
+        top: 378px;
+      }
+
+      .meta-row {
+        position: absolute;
+        left: 303px;
+        width: 300px;
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        color: #111111;
+        font-size: 16px;
+        font-weight: 400;
+        white-space: nowrap;
+      }
+
+      .meta-row.jurusan {
+        top: 334px;
+      }
+
+      .meta-row.nisn {
+        top: 394px;
+      }
+
+      .meta-label {
+        min-width: 62px;
+      }
+
+      .meta-sep {
+        min-width: 8px;
         text-align: center;
       }
 
+      .meta-value {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
       .qr-box {
-        width: 230px;
-        height: 230px;
-        margin: 0 auto;
-        padding: 10px;
+        position: absolute;
+        top: 253px;
+        left: 667px;
+        width: 255px;
+        height: 261px;
+        padding: 16px 19px 17px 20px;
         background: #ffffff;
-        border-radius: 14px;
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+        border: 3px solid #000000;
+        border-radius: 22px;
       }
 
       .qr-box img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
-      }
-
-      .qr-eye {
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 42px;
-        height: 42px;
-        background: #ffffff;
-        border: 10px solid #000000;
-        box-shadow:
-          inset 0 0 0 7px #ffffff,
-          inset 0 0 0 16px #000000;
+        object-fit: contain;
       }
 
       @media print {
         body {
           background: #ffffff;
           padding: 0;
-        }
-
-        .student-card {
-          box-shadow: none;
         }
       }
 
@@ -325,78 +218,135 @@
   </head>
   <body>
     <main class="student-card">
-      <div class="shape-top-right"></div>
-      <div class="shape-bottom"></div>
+      <svg
+        class="card-bg"
+        viewBox="0 0 324 204"
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+      >
+        <defs>
+          <pattern
+            id="motifPat"
+            patternUnits="userSpaceOnUse"
+            width="204"
+            height="324"
+          >
+            <image
+              href="__MOTIF_DATA__"
+              width="204"
+              height="324"
+              preserveAspectRatio="none"
+            />
+          </pattern>
+          <linearGradient
+            id="archOuter"
+            x1="-23"
+            y1="-1"
+            x2="347"
+            y2="-1"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0.490385" stop-color="#0DC425" />
+            <stop offset="1" stop-color="#065E0C" />
+          </linearGradient>
+          <linearGradient
+            id="archInner"
+            x1="-23"
+            y1="-6"
+            x2="347"
+            y2="-6"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#0DC425" />
+            <stop offset="0.25" stop-color="#065E0C" />
+            <stop offset="0.75" stop-color="#065E0C" />
+            <stop offset="1" stop-color="#0DC425" />
+          </linearGradient>
+          <linearGradient
+            id="waveGrad"
+            x1="347"
+            y1="171.07"
+            x2="-23"
+            y2="171.07"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0.490385" stop-color="#0DC425" />
+            <stop offset="1" stop-color="#065E0C" />
+          </linearGradient>
+          <clipPath id="cardClip">
+            <rect width="324" height="204" rx="8" fill="white" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#cardClip)">
+          <rect width="324" height="204" rx="8" fill="white" />
+          <rect
+            opacity="0.2"
+            y="204"
+            width="204"
+            height="324"
+            transform="rotate(-90 0 204)"
+            fill="url(#motifPat)"
+          />
+          <ellipse
+            cx="162"
+            cy="-1"
+            rx="185"
+            ry="50"
+            fill="url(#archOuter)"
+          />
+          <ellipse
+            cx="162"
+            cy="-6"
+            rx="185"
+            ry="50"
+            fill="url(#archInner)"
+          />
+          <path
+            d="M-23 185C-23 157.386 59.8273 195.57 162 195.57C264.173 195.57 347 157.386 347 185C347 212.614 264.173 221.07 162 221.07C59.8273 221.07 -23 212.614 -23 185Z"
+            fill="url(#waveGrad)"
+          />
+          <path
+            d="M-25.5 190.5C-25.5 162.886 59.8273 199.57 162 199.57C264.173 199.57 347 162.886 347 190.5C347 218.114 264.173 225.07 162 225.07C59.8273 225.07 -25.5 218.114 -25.5 190.5Z"
+            fill="#065E0C"
+          />
+        </g>
+      </svg>
 
       <section class="card-content">
-        <header class="header">
-          <div class="school-logo">
-            <img src="__LOGO__" alt="Logo SMKN 2 Banjarmasin">
-          </div>
-
-          <div class="school-title">
-            <h1>SMKN 2 Banjarmasin</h1>
-            <p>Jl. Brigjend H. Hasan Basri No. 6, Banjarmasin - Kalimantan Selatan 70123</p>
-          </div>
-        </header>
-
-        <div class="motto">
-          Berilmu<br />
-          Berkarakter<br />
-          <span>Berprestasi</span>
+        <div class="school-logo">
+          <img src="__LOGO__" alt="Logo SMKN 2 Banjarmasin" />
         </div>
 
-        <div class="label-title">ID CARD</div>
+        <div class="school-title">
+          <h1>SMKN 2 Banjarmasin</h1>
+        </div>
+
+        <div class="kartu-title">Kartu Pelajar</div>
 
         <aside class="student-photo">
-          <img src="__PHOTO__" alt="Foto Murid">
+          <img src="__PHOTO__" alt="Foto Murid" />
         </aside>
 
-        <section class="student-info">
-          <!-- name -->
-            <div class="student-name">__STUDENT_NAME__</div>
-          <div class="info-row">
-            <div class="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
-                <path d="M0 0h24v24H0z" fill="none" />
-                <path fill="currentColor" d="M12 3L1 9l11 6l9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17z" />
-              </svg>
-            </div>
-            <div class="info-label">Kelas</div>
-            <div class="separator">:</div>
-            <div class="info-value">__KELAS__</div>
-          </div>
+        <div class="student-name">__STUDENT_NAME__</div>
+        <span style="display: none">__JURUSAN__</span>
+        <div class="meta-rule rule-1"></div>
 
-          <div class="info-row">
-            <div class="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
-                <path d="M0 0h24v24H0z" fill="none" />
-                <path fill="currentColor" d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5c-1.65 0-3.35.3-4.75 1.05c-.1.05-.15.05-.25.05c-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1c1.11-.35 2.33-.5 3.5-.5c1.95 0 4.05.4 5.5 1.5c1.45-1.1 3.55-1.5 5.5-1.5c1.17 0 2.39.15 3.5.5c.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5c-.1 0-.15 0-.25-.05c-1.4-.75-3.1-1.05-4.75-1.05c-1.7 0-4.15.65-5.5 1.5M12 8v11.5c1.35-.85 3.8-1.5 5.5-1.5c1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5c-1.7 0-4.15.65-5.5 1.5m1 3.5c1.11-.68 2.6-1 4.5-1c.91 0 1.76.09 2.5.28V9.23c-.87-.15-1.71-.23-2.5-.23q-2.655 0-4.5.84zm4.5.17c-1.71 0-3.21.26-4.5.79v1.69c1.11-.65 2.6-.99 4.5-.99c1.04 0 1.88.08 2.5.24v-1.5c-.87-.16-1.71-.23-2.5-.23m2.5 2.9c-.87-.16-1.71-.24-2.5-.24c-1.83 0-3.33.27-4.5.8v1.69c1.11-.66 2.6-.99 4.5-.99c1.04 0 1.88.08 2.5.24z" />
-              </svg>
-            </div>
-            <div class="info-label">Jurusan</div>
-            <div class="separator">:</div>
-            <div class="info-value">__JURUSAN__</div>
-          </div>
+        <div class="meta-row jurusan">
+          <span class="meta-label">Jurusan</span>
+          <span class="meta-sep">:</span>
+          <span class="meta-value">__KELAS__</span>
+        </div>
+        <div class="meta-rule rule-2"></div>
 
-          <div class="info-row">
-            <div class="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
-                <path d="M0 0h24v24H0z" fill="none" />
-                <path fill="currentColor" d="M2 3h20c1.05 0 2 .95 2 2v14c0 1.05-.95 2-2 2H2c-1.05 0-2-.95-2-2V5c0-1.05.95-2 2-2m12 3v1h8V6zm0 2v1h8V8zm0 2v1h7v-1zm-6 3.91C6 13.91 2 15 2 17v1h12v-1c0-2-4-3.09-6-3.09M8 6a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3" />
-              </svg>
-            </div>
-            <div class="info-label">NISN</div>
-            <div class="separator">:</div>
-            <div class="info-value">__NISN__</div>
-          </div>
-        </section>
+        <div class="meta-row nisn">
+          <span class="meta-label">NISN</span>
+          <span class="meta-sep">:</span>
+          <span class="meta-value">__NISN__</span>
+        </div>
 
-        <section class="qr-section">
-          <div class="qr-box">
-            <img src="__QR__" alt="QR Code Murid">
-          </div>
-        </section>
+        <div class="qr-box">
+          <img src="__QR__" alt="QR Code Murid" />
+        </div>
       </section>
     </main>
   </body>

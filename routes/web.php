@@ -35,13 +35,11 @@ Route::prefix('mpanel')->middleware('auth')->group(function () {
 
         $html = Storage::disk('local')->get($fileName);
 
-        if ($orientation === 'vertical') {
-            static $motifDataUrl;
-            $motifDataUrl ??= 'data:image/png;base64,'.base64_encode(
-                file_get_contents(public_path('assets/img/motif-kartu.png'))
-            );
-            $html = str_replace('__MOTIF_DATA__', $motifDataUrl, $html);
-        }
+        static $motifDataUrl;
+        $motifDataUrl ??= 'data:image/png;base64,'.base64_encode(
+            file_get_contents(public_path('assets/img/motif-kartu.png'))
+        );
+        $html = str_replace('__MOTIF_DATA__', $motifDataUrl, $html);
 
         // ETag dari isi respons final (termasuk motif) agar revisi template
         // langsung ketahuan browser: fetch mengirim If-None-Match dan server
