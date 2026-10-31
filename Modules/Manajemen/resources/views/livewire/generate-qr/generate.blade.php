@@ -602,7 +602,7 @@
             let totalData = 0;
             let currentRunId = null;
             let cardsSinceYield = 0;
-            let appendedBackPages = new Set();
+            let backSourceByClass = new Map();
             let zip = null;
             let zipChunks = [];
 
@@ -611,7 +611,7 @@
                 totalData = 0;
                 cardsSinceYield = 0;
                 zipChunks = [];
-                appendedBackPages = new Set();
+                backSourceByClass = new Map();
 
                 progressTextMurid.textContent = '0/0';
                 progressPercentMurid.textContent = '0%';
@@ -789,6 +789,9 @@
 
                         if (cardCanvas) {
                             const className = murid?.rombel?.nama_lengkap ?? 'Kelas';
+                            if (!backSourceByClass.has(className)) {
+                                backSourceByClass.set(className, { murid, qrSvg: svgString });
+                            }
                             await window.addStudentCardToPdf?.({
                                 className,
                                 canvas: cardCanvas,
@@ -797,6 +800,8 @@
                             });
                             releaseCanvas(cardCanvas);
                         }
+
+
 
                         processed++;
 
@@ -818,10 +823,13 @@
                             const className = murid?.rombel?.nama_lengkap ?? 'Kelas';
                             if (!appendedBackPages.has(className)) {
                                 appendedBackPages.add(className);
-                                await window.appendStudentCardBackPage?.({ className, orientation, model: event.model ?? 'standar' });
+                                const backSource = backSourceByClass.get(className) ?? { murid, qrSvg: '' };
+                                await window.appendStudentCardBackPage?.({ className, orientation, model: event.model ?? 'standar', murid: backSource.murid, qrSvg: backSource.qrSvg });
                                 await yieldToBrowser(true);
                             }
                         }
+
+
                         const pdfFiles = await (
                             window.exportStudentCardPdfsAsync?.() ??
                             Promise.resolve(window.exportStudentCardPdfs?.() ?? [])
