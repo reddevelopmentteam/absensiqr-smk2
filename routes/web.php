@@ -33,18 +33,18 @@ Route::prefix('mpanel')->middleware('auth')->group(function () {
         }
 
         $templateFiles = [
-            'horizontal' => 'card/kartu-pelajar-horizontal.html',
-            'vertical' => 'card/kartu-pelajar-vertical.html',
-            'horizontal-belakang' => 'card/kartu-pelajar-belakang-horizontal.html',
-            'vertical-belakang' => 'card/kartu-pelajar-belakang-vertical.html',
+            'horizontal' => 'card/kartu-pelajar-modern-horizontal.html',
+            'vertical' => 'card/kartu-pelajar-modern-vertical.html',
+            'horizontal-belakang' => 'card/kartu-pelajar-modern-belakang-horizontal.html',
+            'vertical-belakang' => 'card/kartu-pelajar-belakang-modern-vertical.html',
         ];
 
         if ($model === 'baru') {
             $templateFiles = [
-                'horizontal' => 'card/kartu-pelajar-baru-horizontal.html',
-                'vertical' => 'card/kartu-pelajar-baru-horizontal.html',
-                'horizontal-belakang' => 'card/kartu-pelajar-belakang-horizontal.html',
-                'vertical-belakang' => 'card/kartu-pelajar-belakang-horizontal.html',
+                'horizontal' => 'card/kartu-pelajar-classic-horizontal.html',
+                'vertical' => 'card/kartu-pelajar-classic-horizontal.html',
+                'horizontal-belakang' => 'card/kartu-pelajar-modern-belakang-horizontal.html',
+                'vertical-belakang' => 'card/kartu-pelajar-modern-belakang-horizontal.html',
             ];
         }
 
