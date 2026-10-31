@@ -21,9 +21,14 @@
         padding: 24px;
       }
 
-      /* 204 x 324 (SVG acuan Potrait - Front) diskala 3x = 612 x 972 */
+      /* 204 x 324 (SVG acuan Potrait - Front) diskala 3x = 612 x 972.
+         flex:none mengunci ukuran: tanpa ini kartu menyusut di viewport
+         sempit (flex-shrink default) lalu motif ter-letterbox oleh
+         preserveAspectRatio meet, sehingga overlay logo/QR tidak sejajar
+         dengan placeholder bake dan logo tampak ganda. */
       .student-card {
         position: relative;
+        flex: none;
         width: 612px;
         height: 972px;
         overflow: hidden;
@@ -44,15 +49,14 @@
         inset: 0;
         z-index: 2;
       }
-
-      /* Kotak logo diukur dari PNG acuan 408x648: bbox x[77,170] y[27,110]
+      /* Kotak logo diukur dari PNG acuan 408x648: badge x[77,171] y[27,122]
          dikali 1.5 ke ruang 612x972. Menutup logo bake dengan logo hidup. */
       .school-logo {
         position: absolute;
         top: 40px;
         left: 115px;
         width: 142px;
-        height: 124px;
+        height: 144px;
       }
 
       .school-logo img {
