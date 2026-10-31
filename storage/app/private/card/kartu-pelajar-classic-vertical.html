@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KARTU PELAJAR SMKN 2 Banjarmasin</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #d8e6f7;
+        padding: 24px;
+      }
+
+      /* 204 x 324 (SVG acuan Potrait - Front) diskala 3x = 612 x 972 */
+      .student-card {
+        position: relative;
+        width: 612px;
+        height: 972px;
+        overflow: hidden;
+        border-radius: 42px;
+        background: #85983c;
+      }
+
+      .card-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .card-content {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+      }
+
+      .school-logo {
+        position: absolute;
+        top: 33px;
+        left: 114px;
+        width: 80px;
+        height: 78px;
+      }
+
+      .school-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+      }
+
+      .school-name {
+        position: absolute;
+        top: 48px;
+        left: 205px;
+        width: 290px;
+        color: #f1f1f1;
+        font-size: 28px;
+        font-weight: 800;
+        line-height: 1.2;
+        white-space: nowrap;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+      }
+
+      .school-tagline {
+        position: absolute;
+        top: 80px;
+        left: 205px;
+        width: 290px;
+        color: #e4e9d0;
+        font-size: 21px;
+        font-weight: 400;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .student-photo {
+        position: absolute;
+        top: 207px;
+        left: 144px;
+        width: 324px;
+        height: 324px;
+        border-radius: 30px;
+        box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);
+        background: white;
+        overflow: hidden;
+      }
+
+      .student-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border-radius: 30px;
+        border: 6px solid #f1f1f1;
+      }
+
+      .student-name {
+        position: absolute;
+        top: 564px;
+        left: 26px;
+        width: 560px;
+        text-align: center;
+        color: #000000;
+        font-size: 32px;
+        font-weight: 800;
+        font-style: italic;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* Garis horizontal di bawah nama */
+      .rule {
+        position: absolute;
+        top: 602px;
+        left: 123px;
+        width: 366px;
+        height: 2px;
+        background: #000000;
+      }
+
+      /* Baris KELAS | NISN */
+      .kelas-nisn {
+        position: absolute;
+        top: 618px;
+        left: 0;
+        width: 612px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 18px;
+        color: #000000;
+        font-size: 30px;
+        font-weight: 800;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      .kelas-nisn .sep {
+        width: 2px;
+        height: 30px;
+        background: #000000;
+        flex-shrink: 0;
+      }
+
+      /* QR kotak hitam-putih */
+      .qr-box {
+        position: absolute;
+        top: 673px;
+        left: 181px;
+        width: 248px;
+        height: 248px;
+        background: #ffffff;
+        border: 3px solid #000000;
+        padding: 14px;
+      }
+
+      .qr-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      @media print {
+        body {
+          background: #ffffff;
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="student-card">
+      <svg
+        class="card-bg"
+        viewBox="0 0 204 324"
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+      >
+        <defs>
+          <pattern
+            id="baruVertHijau"
+            patternUnits="userSpaceOnUse"
+            width="204"
+            height="324"
+          >
+            <image
+              href="__BARU_HIJAU_MOTIF_DATA__"
+              width="204"
+              height="324"
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </pattern>
+          <pattern
+            id="baruVertPutih"
+            patternUnits="userSpaceOnUse"
+            width="204"
+            height="324"
+          >
+            <image
+              href="__BARU_PUTIH_MOTIF_DATA__"
+              width="204"
+              height="324"
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </pattern>
+          <clipPath id="baruVertClip">
+            <rect width="204" height="324" rx="14" fill="white" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#baruVertClip)">
+          <rect width="204" height="154" fill="url(#baruVertHijau)" />
+          <rect y="154" width="204" height="170" fill="url(#baruVertPutih)" />
+        </g>
+      </svg>
+
+      <section class="card-content">
+        <div class="school-logo">
+          <img src="__LOGO__" alt="Logo SMKN 2 Banjarmasin" />
+        </div>
+
+        <div class="school-name">SMKN 2 Banjarmasin</div>
+        <div class="school-tagline">Sekolah Pusat Unggulan</div>
+
+        <aside class="student-photo">
+          <img src="__PHOTO__" alt="Foto Murid" />
+        </aside>
+
+        <h1 class="student-name">__STUDENT_NAME__</h1>
+        <span style="display: none">__JURUSAN__</span>
+
+        <div class="rule"></div>
+
+        <div class="kelas-nisn">
+          <span class="kelas">__KELAS__</span>
+          <span class="sep"></span>
+          <span class="nisn">__NISN__</span>
+        </div>
+
+        <div class="qr-box">
+          <img src="__QR__" alt="QR Code Murid" />
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

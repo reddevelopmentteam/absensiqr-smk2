@@ -227,34 +227,60 @@
                         >
                             <div class="flex items-center gap-4">
                                 @if ($model['key'] === 'baru')
-                                    {{-- Miniatur desain hijau model baru (landscape 3:2) --}}
-                                    <div class="flex h-20 w-[7.5rem] shrink-0 overflow-hidden rounded-md border-2 border-[#85983c] bg-white">
-                                        <div class="flex w-[28%] flex-col items-center bg-[#85983c] py-1 text-white">
-                                            <div class="h-3 w-3 rounded-full bg-white/80"></div>
-                                            <div class="mt-0.5 h-0.5 w-8 rounded bg-white/70"></div>
-                                            <div class="mt-1 h-6 w-4 rounded-sm bg-sky-500 ring-1 ring-white"></div>
-                                        </div>
-                                        <div class="flex-1 px-1 py-1">
-                                            <div class="text-[5px] font-extrabold leading-tight text-black">KARTU PELAJAR</div>
-                                            <div class="mt-1 space-y-1">
-                                                <div>
-                                                    <div class="text-[4px] leading-none text-gray-500">Nama</div>
-                                                    <div class="text-[5px] font-bold leading-tight text-black">Nama Murid</div>
-                                                </div>
-                                                <div>
-                                                    <div class="text-[4px] leading-none text-gray-500">Kelas</div>
-                                                    <div class="text-[5px] font-bold leading-tight text-black">X PPLG A</div>
-                                                </div>
+                                    @if ($pendingOrientation === 'vertical')
+                                        {{-- Miniatur desain hijau model baru (portrait 2:3, panel hijau atas) --}}
+                                        <div class="flex h-20 w-[3.75rem] shrink-0 flex-col overflow-hidden rounded-md border-2 border-[#85983c] bg-white">
+                                            <div class="flex h-[30%] flex-col items-center bg-[#85983c] py-0.5 text-white">
+                                                <div class="h-2 w-2 rounded-full bg-white/80"></div>
+                                                <div class="mt-px h-0.5 w-5 rounded bg-white/70"></div>
                                             </div>
-                                            <div class="ml-auto mt-1 h-5 w-5 border border-black bg-white p-px">
-                                                <div class="grid h-full w-full grid-cols-3 grid-rows-3 gap-px">
-                                                    <div class="bg-black"></div><div></div><div class="bg-black"></div>
-                                                    <div></div><div class="bg-black"></div><div></div>
-                                                    <div class="bg-black"></div><div></div><div class="bg-black"></div>
+                                            <div class="flex flex-1 flex-col items-center px-1 py-0.5">
+                                                <div class="h-4 w-5 rounded-sm bg-sky-500 ring-1 ring-gray-300"></div>
+                                                <div class="mt-0.5 h-0.5 w-8 rounded bg-gray-800"></div>
+                                                <div class="mt-0.5 flex items-center gap-0.5 text-[4px] font-bold leading-none text-black">
+                                                    <span>X PPLG A</span>
+                                                    <span class="h-1.5 w-px bg-black"></span>
+                                                    <span>NISN</span>
+                                                </div>
+                                                <div class="mt-0.5 h-4 w-4 border border-black bg-white p-px">
+                                                    <div class="grid h-full w-full grid-cols-3 grid-rows-3 gap-px">
+                                                        <div class="bg-black"></div><div></div><div class="bg-black"></div>
+                                                        <div></div><div class="bg-black"></div><div></div>
+                                                        <div class="bg-black"></div><div></div><div class="bg-black"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @else
+                                        {{-- Miniatur desain hijau model baru (landscape 3:2) --}}
+                                        <div class="flex h-20 w-[7.5rem] shrink-0 overflow-hidden rounded-md border-2 border-[#85983c] bg-white">
+                                            <div class="flex w-[28%] flex-col items-center bg-[#85983c] py-1 text-white">
+                                                <div class="h-3 w-3 rounded-full bg-white/80"></div>
+                                                <div class="mt-0.5 h-0.5 w-8 rounded bg-white/70"></div>
+                                                <div class="mt-1 h-6 w-4 rounded-sm bg-sky-500 ring-1 ring-white"></div>
+                                            </div>
+                                            <div class="flex-1 px-1 py-1">
+                                                <div class="text-[5px] font-extrabold leading-tight text-black">KARTU PELAJAR</div>
+                                                <div class="mt-1 space-y-1">
+                                                    <div>
+                                                        <div class="text-[4px] leading-none text-gray-500">Nama</div>
+                                                        <div class="text-[5px] font-bold leading-tight text-black">Nama Murid</div>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-[4px] leading-none text-gray-500">Kelas</div>
+                                                        <div class="text-[5px] font-bold leading-tight text-black">X PPLG A</div>
+                                                    </div>
+                                                </div>
+                                                <div class="ml-auto mt-1 h-5 w-5 border border-black bg-white p-px">
+                                                    <div class="grid h-full w-full grid-cols-3 grid-rows-3 gap-px">
+                                                        <div class="bg-black"></div><div></div><div class="bg-black"></div>
+                                                        <div></div><div class="bg-black"></div><div></div>
+                                                        <div class="bg-black"></div><div></div><div class="bg-black"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
                                 @else
                                     <div class="{{ $pendingOrientation === 'horizontal' ? 'h-14 w-20 border-green-500' : 'h-20 w-14 border-blue-500' }} flex shrink-0 items-center justify-center rounded-md border-2">
                                         <iconify-icon
