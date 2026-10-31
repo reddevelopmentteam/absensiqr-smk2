@@ -44,7 +44,7 @@ Route::prefix('mpanel')->middleware('auth')->group(function () {
                 'horizontal' => 'card/kartu-pelajar-classic-horizontal.html',
                 'vertical' => 'card/kartu-pelajar-classic-vertical.html',
                 'horizontal-belakang' => 'card/kartu-pelajar-belakang-classic-horizontal.html',
-                'vertical-belakang' => 'card/kartu-pelajar-belakang-classic-horizontal.html',
+                'vertical-belakang' => 'card/kartu-pelajar-classic-belakang-vertical.html',
             ];
         }
 
@@ -85,6 +85,11 @@ Route::prefix('mpanel')->middleware('auth')->group(function () {
         $html = str_replace('__BARU_PUTIH_MOTIF_DATA__', $baruPutihMotifDataUrl, $html);
 
         $html = str_replace('__BARU_BELAKANG_MOTIF_DATA__', $baruHijauMotifDataUrl, $html);
+        static $baruBelakangVertMotifDataUrl;
+        $baruBelakangVertMotifDataUrl ??= 'data:image/png;base64,'.base64_encode(
+            file_get_contents(public_path('assets/img/motif-belakang-vertical.png'))
+        );
+        $html = str_replace('__BARU_BELAKANG_VERT_MOTIF_DATA__', $baruBelakangVertMotifDataUrl, $html);
 
         // ETag dari isi respons final (termasuk motif) agar revisi template
         // langsung ketahuan browser: fetch mengirim If-None-Match dan server

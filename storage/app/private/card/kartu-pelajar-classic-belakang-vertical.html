@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KARTU PELAJAR SMKN 2 Banjarmasin - Belakang</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #d8e6f7;
+        padding: 24px;
+      }
+
+      /* 204 x 324 (SVG acuan Potrait - Front) diskala 3x = 612 x 972 */
+      .student-card {
+        position: relative;
+        width: 612px;
+        height: 972px;
+        overflow: hidden;
+        border-radius: 42px;
+        background: #85983c;
+      }
+
+      .card-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .card-content {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+      }
+
+      /* Kotak logo diukur dari PNG acuan 408x648: bbox x[77,170] y[27,110]
+         dikali 1.5 ke ruang 612x972. Menutup logo bake dengan logo hidup. */
+      .school-logo {
+        position: absolute;
+        top: 40px;
+        left: 115px;
+        width: 142px;
+        height: 124px;
+      }
+
+      .school-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+      }
+
+      /* Kotak QR diukur dari PNG acuan: border x[160,245] y[514,599]
+         dikali 1.5. Menutup QR contoh bake dengan QR murid hidup. */
+      .back-qr {
+        position: absolute;
+        top: 771px;
+        left: 240px;
+        width: 127px;
+        height: 127px;
+        background: #ffffff;
+        border: 3px solid #000000;
+        padding: 6px;
+      }
+
+      .back-qr img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      @media print {
+        body {
+          background: #ffffff;
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="student-card">
+      <svg
+        class="card-bg"
+        viewBox="0 0 204 324"
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+      >
+        <defs>
+          <pattern
+            id="baruBackVertMotif"
+            patternUnits="userSpaceOnUse"
+            width="204"
+            height="324"
+          >
+            <image
+              href="__BARU_BELAKANG_VERT_MOTIF_DATA__"
+              width="204"
+              height="324"
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </pattern>
+          <clipPath id="baruBackVertClip">
+            <rect width="204" height="324" rx="14" fill="white" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#baruBackVertClip)">
+          <rect width="204" height="324" fill="url(#baruBackVertMotif)" />
+        </g>
+      </svg>
+
+      <section class="card-content">
+        <div class="school-logo">
+          <img src="__LOGO__" alt="Logo SMKN 2 Banjarmasin" />
+        </div>
+
+        <div class="back-qr">
+          <img src="__QR__" alt="QR Code Murid" />
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
