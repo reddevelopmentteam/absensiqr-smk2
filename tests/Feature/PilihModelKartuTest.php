@@ -86,4 +86,19 @@ class PilihModelKartuTest extends TestCase
             ->assertDispatched('close-model-modal')
             ->assertDispatched('open-download-modal');
     }
+
+    public function test_pratinjau_wireframe_sesuai_orientasi(): void
+    {
+        Livewire::test(PilihQr::class)
+            ->call('pilihOrientasi', 'vertical')
+            ->assertSee('data-model-preview="standar-vertical"', false)
+            ->assertSee('data-model-preview="baru-vertical"', false)
+            ->assertDontSee('solar:card-bold', false);
+
+        Livewire::test(PilihQr::class)
+            ->call('pilihOrientasi', 'horizontal')
+            ->assertSee('data-model-preview="standar-horizontal"', false)
+            ->assertSee('data-model-preview="baru-horizontal"', false)
+            ->assertDontSee('solar:card-bold', false);
+    }
 }

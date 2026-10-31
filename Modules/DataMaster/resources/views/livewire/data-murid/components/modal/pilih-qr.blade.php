@@ -218,18 +218,65 @@
 
             <!-- BODY -->
             <div class="max-h-[75vh] overflow-y-auto p-6 scroll-thin">
-                <div class="grid grid-cols-1 gap-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     @foreach ($this->cardModels() as $model)
                         <button
                             type="button"
                             wire:click="unduhDenganModel('{{ $model['key'] }}')"
-                            class="group rounded-3xl border-2 border-gray-200 bg-gray-50 p-5 text-left transition hover:border-blue-main hover:bg-blue-50"
+                            class="group rounded-3xl border-2 border-gray-200 bg-gray-50 p-5 text-left transition hover:border-blue-main hover:bg-blue-50 hover:shadow-lg"
                         >
-                            <div class="flex items-center gap-4">
-                                @if ($model['key'] === 'baru')
+                            <div class="flex flex-col items-center">
+                                @if ($model['key'] === 'standar')
+                                    @if ($pendingOrientation === 'vertical')
+                                        {{-- Wireframe modern portrait (acuan kartu-pelajar-modern-vertical.html) --}}
+                                        <div data-model-preview="standar-vertical" class="relative h-36 w-24 shrink-0 overflow-hidden rounded-lg border-2 bg-white" style="border-color: {{ $model['accent'] }}">
+                                            <div class="absolute inset-x-0 top-0 h-[30%] rounded-b-[50%] bg-gradient-to-b from-[#0DC425] to-[#065E0C]"></div>
+                                            <div class="absolute left-1/2 top-2 h-4 w-4 -translate-x-1/2 rounded-full bg-white/90 ring-1 ring-white"></div>
+                                            <div class="absolute left-1/2 top-7 h-1 w-10 -translate-x-1/2 rounded bg-white/90"></div>
+                                            <div class="absolute inset-x-2 top-[34%] flex flex-col items-center">
+                                                <div class="h-8 w-6 rounded bg-[#d7e9ff] ring-1 ring-gray-300"></div>
+                                                <div class="mt-1 h-1 w-12 rounded bg-gray-700/80"></div>
+                                                <div class="mt-1 h-1 w-10 rounded bg-gray-400/80"></div>
+                                                <div class="mt-1 h-1 w-8 rounded bg-gray-300"></div>
+                                                <div class="mt-1.5 h-5 w-5 border border-black bg-white p-px">
+                                                    <div class="grid h-full w-full grid-cols-3 grid-rows-3 gap-px">
+                                                        <div class="bg-black"></div><div></div><div class="bg-black"></div>
+                                                        <div></div><div class="bg-black"></div><div></div>
+                                                        <div class="bg-black"></div><div></div><div class="bg-black"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        {{-- Wireframe modern landscape (acuan kartu-pelajar-modern-horizontal.html) --}}
+                                        <div data-model-preview="standar-horizontal" class="relative h-24 w-36 shrink-0 overflow-hidden rounded-lg border-2 bg-white" style="border-color: {{ $model['accent'] }}">
+                                            <div class="absolute inset-x-0 top-0 h-[38%] rounded-b-[50%] bg-gradient-to-b from-[#0DC425] to-[#065E0C]"></div>
+                                            <div class="absolute left-2 top-2 h-4 w-4 rounded-full bg-white/90 ring-1 ring-white"></div>
+                                            <div class="absolute left-8 top-2.5 h-1 w-12 rounded bg-white/90"></div>
+                                            <div class="absolute left-8 top-4 h-0.5 w-8 rounded bg-white/70"></div>
+                                            <div class="absolute bottom-2 left-2 h-9 w-7 rounded bg-[#d7e9ff] ring-1 ring-gray-300"></div>
+                                            <div class="absolute bottom-2 left-11 right-2">
+                                                <div class="h-1 w-3/4 rounded bg-gray-700/80"></div>
+                                                <div class="mt-1 h-1 w-2/3 rounded bg-gray-400/80"></div>
+                                                <div class="mt-1 h-1 w-1/2 rounded bg-gray-300"></div>
+                                                <div class="mt-1.5 h-px w-full bg-black/70"></div>
+                                                <div class="mt-1 flex items-end justify-between">
+                                                    <div class="h-0.5 w-10 rounded bg-gray-300"></div>
+                                                    <div class="h-5 w-5 border border-black bg-white p-px">
+                                                        <div class="grid h-full w-full grid-cols-3 grid-rows-3 gap-px">
+                                                            <div class="bg-black"></div><div></div><div class="bg-black"></div>
+                                                            <div></div><div class="bg-black"></div><div></div>
+                                                            <div class="bg-black"></div><div></div><div class="bg-black"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @else
                                     @if ($pendingOrientation === 'vertical')
                                         {{-- Miniatur desain hijau model baru (portrait 2:3, panel hijau atas) --}}
-                                        <div class="flex h-20 w-[3.75rem] shrink-0 flex-col overflow-hidden rounded-md border-2 border-[#85983c] bg-white">
+                                        <div data-model-preview="baru-vertical" class="flex h-36 w-24 shrink-0 flex-col overflow-hidden rounded-lg border-2 bg-white" style="border-color: {{ $model['accent'] }}">
                                             <div class="flex h-[30%] flex-col items-center bg-[#85983c] py-0.5 text-white">
                                                 <div class="h-2 w-2 rounded-full bg-white/80"></div>
                                                 <div class="mt-px h-0.5 w-5 rounded bg-white/70"></div>
@@ -253,7 +300,7 @@
                                         </div>
                                     @else
                                         {{-- Miniatur desain hijau model baru (landscape 3:2) --}}
-                                        <div class="flex h-20 w-[7.5rem] shrink-0 overflow-hidden rounded-md border-2 border-[#85983c] bg-white">
+                                        <div data-model-preview="baru-horizontal" class="flex h-24 w-36 shrink-0 overflow-hidden rounded-lg border-2 bg-white" style="border-color: {{ $model['accent'] }}">
                                             <div class="flex w-[28%] flex-col items-center bg-[#85983c] py-1 text-white">
                                                 <div class="h-3 w-3 rounded-full bg-white/80"></div>
                                                 <div class="mt-0.5 h-0.5 w-8 rounded bg-white/70"></div>
@@ -281,22 +328,12 @@
                                             </div>
                                         </div>
                                     @endif
-                                @else
-                                    <div class="{{ $pendingOrientation === 'horizontal' ? 'h-14 w-20 border-green-500' : 'h-20 w-14 border-blue-500' }} flex shrink-0 items-center justify-center rounded-md border-2">
-                                        <iconify-icon
-                                            icon="solar:card-bold"
-                                            width="28"
-                                            height="28"
-                                            class="text-blue-500"
-                                        ></iconify-icon>
-                                    </div>
                                 @endif
-
-                                <div>
-                                    <h3 class="font-bold text-gray-800">
+                                <div class="mt-3 flex w-full flex-col items-center text-center">
+                                    <span class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white" style="background-color: {{ $model['accent'] }}">{{ $model['tag'] }}</span>
+                                    <h3 class="mt-1.5 font-bold text-gray-800">
                                         {{ $model['nama'] }}
                                     </h3>
-
                                     <p class="mt-1 text-xs text-gray-500">
                                         {{ $model['deskripsi'] }}
                                     </p>
