@@ -26,6 +26,8 @@ class Generate extends Component
     public bool $isGenerating = false;
     public string $orientation = 'horizontal';
     public int $runId = 0;
+    public ?string $pendingOrientation = null;
+    public string $cardModel = 'standar';
 
     public function mount(): void
     {
@@ -123,19 +125,57 @@ class Generate extends Component
         $this->refreshFilterOptions();
     }
 
-    public function startGenerate($orientation = 'horizontal')
+    /** @return array<int, array{key: string, nama: string, deskripsi: string, tag: string, accent: string}> */
+    public function cardModels(): array
+    {
+        return [
+            ['key' => 'standar', 'nama' => 'Model Standar', 'deskripsi' => 'Desain modern', 'tag' => 'Modern', 'accent' => '#0a7a1e'],
+            ['key' => 'baru', 'nama' => 'Model Baru', 'deskripsi' => 'Desain hijau SMKN 2 Banjarmasin', 'tag' => 'Classic', 'accent' => '#85983c'],
+        ];
+    }
+
+    public function pilihModelUntukGenerate(string $orientasi): void
+    {
+        if ($this->isGenerating) {
+            return;
+        }
+
+        if (! in_array($orientasi, ['vertical', 'horizontal'], true)) {
+            return;
+        }
+
+        $this->pendingOrientation = $orientasi;
+        $this->dispatch('open-generate-model-modal');
+    }
+
+    public function batalPilihModel(): void
+    {
+        $this->pendingOrientation = null;
+        $this->dispatch('close-generate-model-modal');
+    }
+
+    public function startGenerate($orientation = 'horizontal', $model = 'standar')
     {
         if($this->isGenerating) {
             return;
         }
-        
+
+        if (! in_array($orientation, ['vertical', 'horizontal'], true)) {
+            return;
+        }
+
+        if (! in_array($model, array_column($this->cardModels(), 'key'), true)) {
+            return;
+        }
+
         $this->isGenerating = true;
         $this->orientation = $orientation;
+        $this->cardModel = $model;
         $this->runId++;
         $this->activeFilterTingkat = $this->filterTingkat;
         $this->activeFilterJurusan = $this->filterJurusan;
         $this->activeFilterIndeks = $this->filterIndeks;
-        
+
         $this->lastId = 0;
         $this->totalData = 0;
         $chunkData = $this->loadChunk();
@@ -145,12 +185,21 @@ class Generate extends Component
             runId: $this->runId,
             dataMurid: $chunkData->toArray(),
             totalData: $this->totalData,
-            orientation: $orientation
+            orientation: $orientation,
+            model: $model
         );
+
+        $this->dispatch('close-generate-model-modal');
+        $this->pendingOrientation = null;
     }
 
-    public function nextChunk($orientation = 'horizontal')
+
+    public function nextChunk($orientation = 'horizontal', $model = 'standar')
     {
+        $effectiveModel = in_array($model, array_column($this->cardModels(), 'key'), true)
+            ? $model
+            : $this->cardModel;
+
         $chunkData = $this->loadChunk();
 
         if (!$chunkData->isNotEmpty()) {
@@ -158,6 +207,7 @@ class Generate extends Component
             $this->totalData = 0;
             $this->isGenerating = false;
             $this->orientation = 'horizontal';
+            $this->cardModel = 'standar';
             $this->activeFilterTingkat = null;
             $this->activeFilterJurusan = null;
             $this->activeFilterIndeks = null;
@@ -169,7 +219,8 @@ class Generate extends Component
             runId: $this->runId,
             dataMurid: $chunkData->toArray(),
             totalData: $this->totalData,
-            orientation: $orientation
+            orientation: $orientation,
+            model: $effectiveModel
         );
     }
 
