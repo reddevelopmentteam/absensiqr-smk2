@@ -72,13 +72,19 @@ Route::prefix('mpanel')->middleware('auth')->group(function () {
         $baruHijauMotifDataUrl ??= 'data:image/png;base64,'.base64_encode(
             file_get_contents(public_path('assets/img/motif-pelajar-belakang-baru.png'))
         );
-        $html = str_replace('__BARU_HIJAU_MOTIF_DATA__', $baruHijauMotifDataUrl, $html);
+        static $baruVertHijauMotifDataUrl;
+        $baruVertHijauMotifDataUrl ??= 'data:image/png;base64,'.base64_encode(
+            file_get_contents(public_path('assets/img/motif-pelajar-vertikal-hijau.png'))
+        );
+        $html = str_replace('__BARU_HIJAU_MOTIF_DATA__', $baruVertHijauMotifDataUrl, $html);
 
         static $baruPutihMotifDataUrl;
         $baruPutihMotifDataUrl ??= 'data:image/png;base64,'.base64_encode(
-            file_get_contents(public_path('assets/img/motif-pelajar-baru.png'))
+            file_get_contents(public_path('assets/img/motif-pelajar-vertikal-putih.png'))
         );
         $html = str_replace('__BARU_PUTIH_MOTIF_DATA__', $baruPutihMotifDataUrl, $html);
+
+        $html = str_replace('__BARU_BELAKANG_MOTIF_DATA__', $baruHijauMotifDataUrl, $html);
 
         // ETag dari isi respons final (termasuk motif) agar revisi template
         // langsung ketahuan browser: fetch mengirim If-None-Match dan server
