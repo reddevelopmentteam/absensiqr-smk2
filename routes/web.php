@@ -68,6 +68,12 @@ Route::prefix('mpanel')->middleware('auth')->group(function () {
         );
         $html = str_replace('__BARU_MOTIF_DATA__', $baruMotifDataUrl, $html);
 
+        static $baruBelakangMotifDataUrl;
+        $baruBelakangMotifDataUrl ??= 'data:image/png;base64,'.base64_encode(
+            file_get_contents(public_path('assets/img/motif-pelajar-belakang-baru.png'))
+        );
+        $html = str_replace('__BARU_BELAKANG_MOTIF_DATA__', $baruBelakangMotifDataUrl, $html);
+
         // ETag dari isi respons final (termasuk motif) agar revisi template
         // langsung ketahuan browser: fetch mengirim If-None-Match dan server
         // menjawab 304 bila belum berubah, 200 bila sudah berubah.

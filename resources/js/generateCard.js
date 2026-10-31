@@ -965,10 +965,12 @@ class TemplateLoader {
     async applyData(session, { murid, qrSvg }) {
         if (session.isBack) {
             const backLogoDataUrl = await this.getBackLogoDataUrl();
+            const backQrSource = qrSvg ? encodeSvgDataUrl(qrSvg) : null;
 
             await this.setImageSource(session.refs.logoImage, backLogoDataUrl);
+            await this.setImageSource(session.refs.qrImage, backQrSource);
 
-            return null;
+            return backQrSource;
         }
 
         const [photoSource, logoDataUrl] = await Promise.all([
@@ -1045,15 +1047,17 @@ class TemplateLoader {
         }
     }
 
-    async renderBackCanvas({ orientation = "horizontal", model = "standar" } = {}) {
+    async renderBackCanvas({ orientation = "horizontal", model = "standar", murid = null, qrSvg = "" } = {}) {
         const backKey = backKeyOf(orientation);
-        const cacheKey = JSON.stringify({ back: backKey, model });
+        const backQrSvg = qrSvg || await getQrSvg(murid);
+        const cacheKey = JSON.stringify({ back: backKey, model, qrSvg: backQrSvg ?? "" });
 
         if (canvasCache.has(cacheKey)) return canvasCache.get(cacheKey);
 
         const session = await this.getSession(backKey, { model });
 
-        await this.applyData(session, {});
+        await this.applyData(session, { murid, qrSvg: backQrSvg });
+
 
         session.renderContext ??= await createContext(session.card, {
             autoDestruct: false,
@@ -1306,9 +1310,9 @@ const renderStudentCanvas = async ({ murid, qrSvg, orientation = "horizontal", m
     model
 });
 
-const appendBackPageBestEffort = async (manager, { key, orientation, model = "standar" }) => {
+const appendBackPageBestEffort = async (manager, { key, orientation, model = "standar", murid = null, qrSvg = "" }) => {
     try {
-        const backCanvas = await templateLoader.renderBackCanvas({ orientation, model });
+        const backCanvas = await templateLoader.renderBackCanvas({ orientation, model, murid, qrSvg });
 
         await manager.addBackPage({
             key,
@@ -1320,7 +1324,7 @@ const appendBackPageBestEffort = async (manager, { key, orientation, model = "st
     }
 };
 
-const createSingleCardPdfBytes = async ({ canvas, orientation = "horizontal", model = "standar" }) => {
+const createSingleCardPdfBytes = async ({ canvas, orientation = "horizontal", model = "standar", murid = null, qrSvg = "" }) => {
     const normalizedOrientation = normalizeOrientation(orientation);
     const manager = new PdfManager();
 
@@ -1330,11 +1334,10 @@ const createSingleCardPdfBytes = async ({ canvas, orientation = "horizontal", mo
         orientation: normalizedOrientation
     });
 
-    await appendBackPageBestEffort(manager, { key: "single", orientation: normalizedOrientation, model });
+    await appendBackPageBestEffort(manager, { key: "single", orientation: normalizedOrientation, model, murid, qrSvg });
 
     return manager.export()[0]?.pdfBytes ?? null;
 };
-
 const downloadSingleCardPdf = async ({ murid, orientation = "horizontal", model = "standar", filename }) => {
     if (!murid) throw new Error("Student data is required to generate a PDF.");
 
@@ -1349,7 +1352,9 @@ const downloadSingleCardPdf = async ({ murid, orientation = "horizontal", model 
     const pdfBytes = await createSingleCardPdfBytes({
         canvas,
         orientation: normalizedOrientation,
-        model
+        model,
+        murid,
+        qrSvg
     });
 
     if (!pdfBytes) throw new Error("Unable to generate student card PDF.");
@@ -1375,11 +1380,12 @@ const downloadGeneratedStudentCardPdf = async ({ murid, orientation = "horizonta
         canvas,
         orientation: normalizedOrientation
     });
-
     await appendBackPageBestEffort(manager, {
         key: murid?.rombel?.nama_lengkap ?? "Kelas",
         orientation: normalizedOrientation,
-        model
+        model,
+        murid,
+        qrSvg
     });
 
     const pdfBytes = manager.export()[0]?.pdfBytes;
@@ -1552,11 +1558,11 @@ window.addStudentCardToPdf = async ({ className, canvas, orientation = "horizont
  * @param {"horizontal"|"vertical"} [options.orientation]
  * @returns {Promise<void>}
  */
-window.appendStudentCardBackPage = async ({ className, orientation = "horizontal", model = "standar" } = {}) => {
+window.appendStudentCardBackPage = async ({ className, orientation = "horizontal", model = "standar", murid = null, qrSvg = "" } = {}) => {
     if (!className) return;
 
     try {
-        const backCanvas = await templateLoader.renderBackCanvas({ orientation, model });
+        const backCanvas = await templateLoader.renderBackCanvas({ orientation, model, murid, qrSvg });
 
         await pdfManager.addBackPage({
             key: className,
