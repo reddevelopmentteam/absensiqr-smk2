@@ -43,8 +43,8 @@ Route::prefix('mpanel')->middleware('auth')->group(function () {
             $templateFiles = [
                 'horizontal' => 'card/kartu-pelajar-classic-horizontal.html',
                 'vertical' => 'card/kartu-pelajar-classic-horizontal.html',
-                'horizontal-belakang' => 'card/kartu-pelajar-modern-belakang-horizontal.html',
-                'vertical-belakang' => 'card/kartu-pelajar-modern-belakang-horizontal.html',
+                'horizontal-belakang' => 'card/kartu-pelajar-belakang-classic-horizontal.html',
+                'vertical-belakang' => 'card/kartu-pelajar-belakang-classic-horizontal.html',
             ];
         }
 

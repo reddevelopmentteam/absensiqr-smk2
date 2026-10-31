@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KARTU PELAJAR SMKN 2 Banjarmasin - Belakang</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #d8e6f7;
+        padding: 24px;
+      }
+
+      /* 324 x 204 (SVG acuan) diskala 3x = 972 x 612 */
+      .student-card {
+        position: relative;
+        width: 972px;
+        height: 612px;
+        overflow: hidden;
+        border-radius: 42px;
+        background: #85983c;
+      }
+
+      .card-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .card-content {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        color: #f1f1f1;
+      }
+
+      .school-logo {
+        position: absolute;
+        top: 21px;
+        left: 222px;
+        width: 108px;
+        height: 105px;
+      }
+
+      .school-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+        border-radius: 50%;
+        background: #ffffff;
+      }
+
+      .school-name {
+        position: absolute;
+        top: 33px;
+        left: 357px;
+        width: 390px;
+        color: #f1f1f1;
+        font-size: 39px;
+        font-weight: 800;
+        line-height: 1.1;
+        white-space: nowrap;
+      }
+
+      .school-tagline {
+        position: absolute;
+        top: 84px;
+        left: 357px;
+        width: 390px;
+        color: #e4e9d0;
+        font-size: 30px;
+        font-weight: 400;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .visi-title {
+        position: absolute;
+        top: 156px;
+        left: 0;
+        width: 972px;
+        text-align: center;
+        color: #f1f1f1;
+        font-size: 42px;
+        font-weight: 800;
+        line-height: 1.2;
+        letter-spacing: 2px;
+      }
+
+      .visi-quote {
+        position: absolute;
+        top: 219px;
+        left: 90px;
+        width: 792px;
+        text-align: center;
+        color: #f1f1f1;
+        font-size: 21px;
+        font-weight: 700;
+        font-style: italic;
+        line-height: 1.35;
+      }
+
+      .misi-list {
+        position: absolute;
+        top: 291px;
+        left: 51px;
+        width: 861px;
+        color: #f1f1f1;
+        font-size: 16.5px;
+        font-weight: 400;
+        line-height: 1.4;
+      }
+
+      .misi-list ol {
+        list-style-position: outside;
+        padding-left: 24px;
+      }
+
+      .misi-list li {
+        margin-bottom: 3px;
+      }
+
+      .back-footer {
+        position: absolute;
+        top: 561px;
+        left: 0;
+        width: 972px;
+        text-align: center;
+        color: #f1f1f1;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .back-qr {
+        position: absolute;
+        top: 516px;
+        left: 867px;
+        width: 77px;
+        height: 77px;
+        background: #ffffff;
+        border: 1px solid #000000;
+        padding: 4px;
+      }
+
+      .back-qr img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      @media print {
+        body {
+          background: #ffffff;
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="student-card">
+      <svg
+        class="card-bg"
+        viewBox="0 0 324 204"
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+      >
+        <defs>
+          <pattern
+            id="baruBackMotif"
+            patternUnits="userSpaceOnUse"
+            width="324"
+            height="204"
+          >
+            <image
+              href="__BARU_MOTIF_DATA__"
+              width="324"
+              height="204"
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </pattern>
+          <clipPath id="baruBackClip">
+            <rect width="324" height="204" rx="14" fill="white" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#baruBackClip)">
+          <rect width="324" height="204" rx="14" fill="url(#baruBackMotif)" />
+        </g>
+      </svg>
+
+      <section class="card-content">
+        <div class="school-logo">
+          <img src="__LOGO__" alt="Logo SMKN 2 Banjarmasin" />
+        </div>
+
+        <div class="school-name">SMKN 2 Banjarmasin</div>
+        <div class="school-tagline">Sekolah Pusat Unggulan</div>
+
+        <h2 class="visi-title">VISI &amp; MISI</h2>
+
+        <p class="visi-quote">
+          &ldquo;Terwujudnya Murid unggul, berkarakter, dan berdaya saing
+          global melalui transformasi digital dengan penguatan budaya kerja
+          industri.&rdquo;
+        </p>
+
+        <div class="misi-list">
+          <ol>
+            <li>Membekali peserta didik dengan kompetensi program unggulan berbasis Teaching Factory (TEFA).</li>
+            <li>Menanamkan nilai-nilai karakter, etika digital, dan semangat kebangsaan dalam setiap aktivitas pembelajaran dan kehidupan sekolah.</li>
+            <li>Pembelajaran berbasis digitalisasi melalui integrasi teknologi informasi dan komunikasi dalam proses belajar mengajar guna meningkatkan daya saing global.</li>
+            <li>Pembelajaran berbasis digitalisasi melalui integrasi teknologi informasi dan komunikasi dalam proses belajar mengajar guna meningkatkan daya saing global.</li>
+            <li>Menjalin kemitraan strategis dengan dunia usaha, dunia industri, dan dunia kerja (DUDI-KA) dengan penguatan budaya industri.</li>
+            <li>Melaksanakan tata kelola BLUD untuk mendukung proses produksi/jasa.</li>
+          </ol>
+        </div>
+
+        <div class="back-footer">Unggul, Berkarakter dan Kompetitif</div>
+
+        <div class="back-qr">
+          <img src="__QR__" alt="QR Code Murid" />
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
