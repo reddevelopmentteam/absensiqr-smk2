@@ -25,6 +25,13 @@ Route::get('/mpanel', function () {
 Route::prefix('mpanel')->middleware('auth')->group(function () {
 
     Route::get('/card-template/{orientation}', function (Request $request, string $orientation) {
+        $allowedModels = ['standar'];
+        $model = $request->query('model', 'standar');
+
+        if (! in_array($model, $allowedModels, true)) {
+            abort(404);
+        }
+
         $templateFiles = [
             'horizontal' => 'card/kartu-pelajar-horizontal.html',
             'vertical' => 'card/kartu-pelajar-vertical.html',
