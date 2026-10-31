@@ -5,7 +5,7 @@
 
         x-on:open-download-modal.window="
             openModalDownload = true;
-            $wire.loadMurid($event.detail.id);
+            if ($event.detail && $event.detail.id) { $wire.loadMurid($event.detail.id); }
         "
 
         @close-download-modal.window="openModalDownload = false"

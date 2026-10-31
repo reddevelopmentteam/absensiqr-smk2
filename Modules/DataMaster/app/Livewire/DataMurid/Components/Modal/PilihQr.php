@@ -13,6 +13,10 @@ class PilihQr extends Component
 
     public function loadMurid($muridId): void
     {
+        if (empty($muridId)) {
+            return;
+        }
+
         $this->murid = Murid::query()->with(['rombel.jurusan'])->findOrFail($muridId);
     }
 
@@ -20,7 +24,7 @@ class PilihQr extends Component
     public function cardModels(): array
     {
         return [
-            ['key' => 'standar', 'nama' => 'Model Standar', 'deskripsi' => 'Desain bawaan sekolah'],
+            ['key' => 'standar', 'nama' => 'Model Standar', 'deskripsi' => 'Desain modern'],
         ];
     }
 
