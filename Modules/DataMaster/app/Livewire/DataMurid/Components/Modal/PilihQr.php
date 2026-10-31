@@ -25,6 +25,7 @@ class PilihQr extends Component
     {
         return [
             ['key' => 'standar', 'nama' => 'Model Standar', 'deskripsi' => 'Desain modern'],
+            ['key' => 'baru', 'nama' => 'Model Baru', 'deskripsi' => 'Desain hijau SMKN 2 Banjarmasin'],
         ];
     }
 

@@ -25,7 +25,7 @@ Route::get('/mpanel', function () {
 Route::prefix('mpanel')->middleware('auth')->group(function () {
 
     Route::get('/card-template/{orientation}', function (Request $request, string $orientation) {
-        $allowedModels = ['standar'];
+        $allowedModels = ['standar', 'baru'];
         $model = $request->query('model', 'standar');
 
         if (! in_array($model, $allowedModels, true)) {
@@ -38,6 +38,15 @@ Route::prefix('mpanel')->middleware('auth')->group(function () {
             'horizontal-belakang' => 'card/kartu-pelajar-belakang-horizontal.html',
             'vertical-belakang' => 'card/kartu-pelajar-belakang-vertical.html',
         ];
+
+        if ($model === 'baru') {
+            $templateFiles = [
+                'horizontal' => 'card/kartu-pelajar-baru-horizontal.html',
+                'vertical' => 'card/kartu-pelajar-baru-horizontal.html',
+                'horizontal-belakang' => 'card/kartu-pelajar-belakang-horizontal.html',
+                'vertical-belakang' => 'card/kartu-pelajar-belakang-horizontal.html',
+            ];
+        }
 
         if (! array_key_exists($orientation, $templateFiles)) {
             abort(404);
@@ -52,6 +61,12 @@ Route::prefix('mpanel')->middleware('auth')->group(function () {
             file_get_contents(public_path('assets/img/motif-kartu.png'))
         );
         $html = str_replace('__MOTIF_DATA__', $motifDataUrl, $html);
+
+        static $baruMotifDataUrl;
+        $baruMotifDataUrl ??= 'data:image/png;base64,'.base64_encode(
+            file_get_contents(public_path('assets/img/motif-pelajar-baru.png'))
+        );
+        $html = str_replace('__BARU_MOTIF_DATA__', $baruMotifDataUrl, $html);
 
         // ETag dari isi respons final (termasuk motif) agar revisi template
         // langsung ketahuan browser: fetch mengirim If-None-Match dan server

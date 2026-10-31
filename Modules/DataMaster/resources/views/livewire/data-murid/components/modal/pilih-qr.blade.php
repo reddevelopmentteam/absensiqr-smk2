@@ -226,14 +226,45 @@
                             class="group rounded-3xl border-2 border-gray-200 bg-gray-50 p-5 text-left transition hover:border-blue-main hover:bg-blue-50"
                         >
                             <div class="flex items-center gap-4">
-                                <div class="{{ $pendingOrientation === 'horizontal' ? 'h-14 w-20 border-green-500' : 'h-20 w-14 border-blue-500' }} flex shrink-0 items-center justify-center rounded-md border-2">
-                                    <iconify-icon
-                                        icon="solar:card-bold"
-                                        width="28"
-                                        height="28"
-                                        class="text-blue-500"
-                                    ></iconify-icon>
-                                </div>
+                                @if ($model['key'] === 'baru')
+                                    {{-- Miniatur desain hijau model baru (landscape 3:2) --}}
+                                    <div class="flex h-20 w-[7.5rem] shrink-0 overflow-hidden rounded-md border-2 border-[#85983c] bg-white">
+                                        <div class="flex w-[28%] flex-col items-center bg-[#85983c] py-1 text-white">
+                                            <div class="h-3 w-3 rounded-full bg-white/80"></div>
+                                            <div class="mt-0.5 h-0.5 w-8 rounded bg-white/70"></div>
+                                            <div class="mt-1 h-6 w-4 rounded-sm bg-sky-500 ring-1 ring-white"></div>
+                                        </div>
+                                        <div class="flex-1 px-1 py-1">
+                                            <div class="text-[5px] font-extrabold leading-tight text-black">KARTU PELAJAR</div>
+                                            <div class="mt-1 space-y-1">
+                                                <div>
+                                                    <div class="text-[4px] leading-none text-gray-500">Nama</div>
+                                                    <div class="text-[5px] font-bold leading-tight text-black">Nama Murid</div>
+                                                </div>
+                                                <div>
+                                                    <div class="text-[4px] leading-none text-gray-500">Kelas</div>
+                                                    <div class="text-[5px] font-bold leading-tight text-black">X PPLG A</div>
+                                                </div>
+                                            </div>
+                                            <div class="ml-auto mt-1 h-5 w-5 border border-black bg-white p-px">
+                                                <div class="grid h-full w-full grid-cols-3 grid-rows-3 gap-px">
+                                                    <div class="bg-black"></div><div></div><div class="bg-black"></div>
+                                                    <div></div><div class="bg-black"></div><div></div>
+                                                    <div class="bg-black"></div><div></div><div class="bg-black"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="{{ $pendingOrientation === 'horizontal' ? 'h-14 w-20 border-green-500' : 'h-20 w-14 border-blue-500' }} flex shrink-0 items-center justify-center rounded-md border-2">
+                                        <iconify-icon
+                                            icon="solar:card-bold"
+                                            width="28"
+                                            height="28"
+                                            class="text-blue-500"
+                                        ></iconify-icon>
+                                    </div>
+                                @endif
 
                                 <div>
                                     <h3 class="font-bold text-gray-800">

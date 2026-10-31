@@ -56,6 +56,15 @@ const CONFIG = {
     }
 };
 
+const formatBirthDate = (value) => {
+    if (!value) return "";
+
+    const date = value instanceof Date ? value : new Date(value);
+
+    if (Number.isNaN(date.getTime())) return String(value ?? "");
+
+    return date.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+};
 const templateCache = new Map();
 const templateRequestCache = new Map();
 const canvasCache = new Map();
@@ -732,6 +741,7 @@ class TemplateLoader {
             studentNameNode: this.findTextNode(doc, "__STUDENT_NAME__"),
             classNameNode: this.findTextNode(doc, "__KELAS__"),
             majorNode: this.findTextNode(doc, "__JURUSAN__"),
+            birthDateNode: this.findTextNode(doc, "__TANGGAL_LAHIR__"),
             nisnNode: this.findTextNode(doc, "__NISN__")
         };
     }
@@ -943,10 +953,10 @@ class TemplateLoader {
         ]);
         const { refs } = session;
         const qrSource = encodeSvgDataUrl(qrSvg);
-
         this.setText(refs.studentNameNode, truncateText(murid?.nama ?? "", CONFIG.TEXT.studentName).toUpperCase());
         this.setText(refs.classNameNode, truncateText(murid?.rombel?.nama_lengkap ?? "", CONFIG.TEXT.className));
         this.setText(refs.majorNode, truncateText(murid?.rombel?.jurusan?.nama ?? "", CONFIG.TEXT.major));
+        this.setText(refs.birthDateNode, formatBirthDate(murid?.tanggal_lahir));
         this.setText(refs.nisnNode, truncateText(murid?.nisn ?? "", CONFIG.TEXT.nisn));
 
         await Promise.all([

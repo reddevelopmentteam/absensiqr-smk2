@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KARTU PELAJAR SMKN 2 Banjarmasin</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #d8e6f7;
+        padding: 24px;
+      }
+
+      /* 324 x 204 (SVG acuan) diskala 3x = 972 x 612 */
+      .student-card {
+        position: relative;
+        width: 972px;
+        height: 612px;
+        overflow: hidden;
+        border-radius: 42px;
+        background: #ffffff;
+      }
+
+      .card-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .card-content {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+      }
+
+      /* Panel hijau kiri */
+      .side-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 348px;
+        height: 612px;
+        background: #85983c;
+      }
+
+      .school-logo {
+        position: absolute;
+        top: 12px;
+        left: 105px;
+        width: 135px;
+        height: 132px;
+      }
+
+      .school-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+      }
+
+      .school-name {
+        position: absolute;
+        top: 150px;
+        left: 0;
+        width: 348px;
+        text-align: center;
+        color: #f2f2f2;
+        font-size: 30px;
+        font-weight: 800;
+        line-height: 1.2;
+        white-space: nowrap;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+      }
+
+      .school-tagline {
+        position: absolute;
+        top: 189px;
+        left: 0;
+        width: 348px;
+        text-align: center;
+        color: #e1ebb9;
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .student-photo {
+        position: absolute;
+        top: 207px;
+        left: 42px;
+        width: 264px;
+        height: 348px;
+        border-radius: 30px;
+        box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);
+        background: #2f80ed;
+        overflow: hidden;
+      }
+
+      .student-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border-radius: 30px;
+        border: 6px solid #f1f1f1;
+        background: #2f80ed;
+      }
+      /* Garis pemisah hijau */
+      .divider {
+        position: absolute;
+        top: 0;
+        left: 402px;
+        width: 9px;
+        height: 612px;
+        background: #85983c;
+      }
+
+      .card-title {
+        position: absolute;
+        top: 81px;
+        left: 459px;
+        width: 470px;
+        color: #010101;
+        font-size: 54px;
+        font-weight: 800;
+        line-height: 1.1;
+        white-space: nowrap;
+      }
+
+      /* Ikon hijau tiap field */
+      .field-icon {
+        position: absolute;
+        left: 402px;
+        width: 72px;
+        height: 72px;
+        background: #85983c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .field-icon svg {
+        width: 48px;
+        height: 48px;
+        fill: #f1f1f1;
+      }
+
+      .field-icon.icon-nama { top: 207px; }
+      .field-icon.icon-tanggal { top: 300px; }
+      .field-icon.icon-kelas { top: 393px; }
+      .field-icon.icon-nisn { top: 486px; }
+
+      /* Label + nilai */
+      .field-label {
+        position: absolute;
+        left: 507px;
+        color: #5b5b5b;
+        font-size: 30px;
+        font-weight: 400;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .field-value {
+        position: absolute;
+        left: 507px;
+        color: #000000;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 250px;
+      }
+      .field-label.label-nama { top: 214px; }
+      .field-value.value-nama { top: 249px; }
+      .field-label.label-tanggal { top: 307px; }
+      .field-value.value-tanggal { top: 340px; }
+      .field-label.label-kelas { top: 401px; }
+      .field-value.value-kelas { top: 436px; }
+      .field-label.label-nisn { top: 493px; }
+      .field-value.value-nisn { top: 526px; }
+
+      /* QR kanan bawah */
+      .qr-box {
+        position: absolute;
+        top: 379px;
+        left: 748px;
+        width: 202px;
+        height: 202px;
+        background: #ffffff;
+        border: 2px solid #000000;
+        padding: 12px;
+      }
+
+      .qr-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      @media print {
+        body {
+          background: #ffffff;
+          padding: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="student-card">
+      <svg
+        class="card-bg"
+        viewBox="0 0 324 204"
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
+      >
+        <defs>
+          <pattern
+            id="baruMotif"
+            patternUnits="userSpaceOnUse"
+            width="324"
+            height="204"
+          >
+            <image
+              href="__BARU_MOTIF_DATA__"
+              width="324"
+              height="204"
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </pattern>
+          <clipPath id="baruClip">
+            <rect width="324" height="204" rx="14" fill="white" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#baruClip)">
+          <rect width="324" height="204" rx="14" fill="url(#baruMotif)" />
+        </g>
+      </svg>
+
+      <section class="card-content">
+        <div class="side-panel"></div>
+
+        <div class="school-logo">
+          <img src="__LOGO__" alt="Logo SMKN 2 Banjarmasin" />
+        </div>
+
+        <div class="school-name">SMKN 2 Banjarmasin</div>
+        <div class="school-tagline">Sekolah Pusat Unggulan</div>
+
+        <aside class="student-photo">
+          <img src="__PHOTO__" alt="Foto Murid" />
+        </aside>
+
+        <div class="divider"></div>
+
+        <h1 class="card-title">KARTU PELAJAR</h1>
+
+        <div class="field-icon icon-nama" aria-hidden="true">
+          <svg viewBox="0 0 16 16"><path d="M8 9c1.66 0 3-1.34 3-3S9.66 3 8 3 5 4.34 5 6s1.34 3 3 3zm0 1c-2.33 0-7 1.17-7 3.5V15h14v-1.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+        <div class="field-label label-nama">Nama</div>
+        <div class="field-value value-nama">__STUDENT_NAME__</div>
+        <span style="display: none">__JURUSAN__</span>
+
+        <div class="field-icon icon-tanggal" aria-hidden="true">
+          <svg viewBox="0 0 16 16"><path d="M3 2V1H2v1H1v12h14V2h-1V1h-1v1H3zm12 11H1V6h14v7zM5 8H3v2h2V8zm3 0H6v2h2V8zm3 0H9v2h2V8z"/></svg>
+        </div>
+        <div class="field-label label-tanggal">Tanggal Lahir</div>
+        <div class="field-value value-tanggal">__TANGGAL_LAHIR__</div>
+
+        <div class="field-icon icon-kelas" aria-hidden="true">
+          <svg viewBox="0 0 16 16"><path d="M1 3h8v2H3v6H1V3zm9 3h5v3h-3v3h-2V6zm-2 8h4v-4H8v4z"/></svg>
+        </div>
+        <div class="field-label label-kelas">Kelas</div>
+        <div class="field-value value-kelas">__KELAS__</div>
+
+        <div class="field-icon icon-nisn" aria-hidden="true">
+          <svg viewBox="0 0 16 16"><path d="M8 1 0 5v2h16V5L8 1zm-6 7v4H1v2h14v-2h-1V8H2zm2 1h2v2H4v-2zm4 0h2v2H8v-2z"/></svg>
+        </div>
+        <div class="field-label label-nisn">NISN</div>
+        <div class="field-value value-nisn">__NISN__</div>
+
+        <div class="qr-box">
+          <img src="__QR__" alt="QR Code Murid" />
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
