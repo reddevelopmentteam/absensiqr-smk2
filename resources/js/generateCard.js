@@ -389,10 +389,33 @@ const getWhiteCanvas = (width, height) => {
         context: whiteCanvasContext
     };
 };
+const roundCanvasCorners = (canvas, radiusPx) => {
+    if (!canvas || !radiusPx || radiusPx <= 0) return canvas;
+
+    const rounded = document.createElement("canvas");
+
+    rounded.width = canvas.width;
+    rounded.height = canvas.height;
+
+    const ctx = rounded.getContext("2d");
+
+    if (!ctx || typeof ctx.roundRect !== "function") return canvas;
+
+    // Sudut kartu transparan di luar radius; JPEG tidak punya alpha sehingga
+    // area itu jadi putih dan menyatu dengan halaman putih. Isi dulu dengan
+    // warna background PDF agar sudut kartu terlihat utuh saat ditempel.
+    ctx.fillStyle = CONFIG.PDF.backgroundColor;
+    ctx.fillRect(0, 0, rounded.width, rounded.height);
+    ctx.beginPath();
+    ctx.roundRect(0, 0, canvas.width, canvas.height, radiusPx);
+    ctx.clip();
+    ctx.drawImage(canvas, 0, 0);
+
+    return rounded;
+};
 
 const canvasToJpegBytes = async (canvas, quality = CONFIG.PDF.jpegQuality) => {
     if (!canvas) return null;
-    if (jpegCache.has(canvas)) return jpegCache.get(canvas);
 
     let bytes = null;
     // domToCanvas() already renders with a solid white background. Encoding
@@ -790,7 +813,8 @@ class TemplateLoader {
             doc,
             card,
             isBack: isBackKey(key),
-            refs: this.collectSessionRefs(doc)
+            refs: this.collectSessionRefs(doc),
+            cardRadiusPx: parseFloat(doc?.defaultView?.getComputedStyle(card)?.borderRadius) || 0
         };
 
         await this.waitForFonts(doc);
@@ -1011,10 +1035,11 @@ class TemplateLoader {
             });
 
             const canvas = await domToCanvas(session.renderContext);
+            const roundedCanvas = roundCanvasCorners(canvas, session.cardRadiusPx ?? 0);
 
-            cacheRenderedCanvas(cacheKey, canvas);
+            cacheRenderedCanvas(cacheKey, roundedCanvas);
 
-            return canvas;
+            return roundedCanvas;
         } finally {
             revokeObjectUrl(qrSource);
         }
@@ -1044,10 +1069,11 @@ class TemplateLoader {
         });
 
         const canvas = await domToCanvas(session.renderContext);
+        const roundedCanvas = roundCanvasCorners(canvas, session.cardRadiusPx ?? 0);
 
-        cacheRenderedCanvas(cacheKey, canvas);
+        cacheRenderedCanvas(cacheKey, roundedCanvas);
 
-        return canvas;
+        return roundedCanvas;
     }
 
     async preload(orientations = ["horizontal"], { model = "standar" } = {}) {
