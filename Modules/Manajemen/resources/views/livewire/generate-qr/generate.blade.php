@@ -602,6 +602,7 @@
             let totalData = 0;
             let currentRunId = null;
             let cardsSinceYield = 0;
+            let appendedBackPages = new Set();
             let backSourceByClass = new Map();
             let zip = null;
             let zipChunks = [];
@@ -611,6 +612,7 @@
                 totalData = 0;
                 cardsSinceYield = 0;
                 zipChunks = [];
+                appendedBackPages = new Set();
                 backSourceByClass = new Map();
 
                 progressTextMurid.textContent = '0/0';
