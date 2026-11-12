@@ -5,11 +5,14 @@ namespace Modules\ScanQR\Livewire\Hardware;
 use App\Models\Murid\AbsenMurid;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Modules\ScanQR\Services\AttendanceProcessingService;
 
 #[Layout('layouts.app')]
 class Scan extends Component
 {
+    use WithPagination;
+
     public string $scanInput = '';
 
     public string $scannerStatus = 'Siap menerima input dari scanner.';
@@ -18,9 +21,30 @@ class Scan extends Component
 
     public ?array $lastResult = null;
 
+    public string $search = '';
+
+    public string $filterStatus = '';
+
+    public int $perPage = 10;
+
     public function mount(): void
     {
         abort_unless(auth()->user()?->canAccess('scan-hardware'), 403);
+    }
+
+    public function updatingSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFilterStatus(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPerPage(): void
+    {
+        $this->resetPage();
     }
 
     public function submitScan(): void
@@ -70,6 +94,8 @@ class Scan extends Component
                 'jenis' => $this->attendanceTypeLabel($absen->waktu_masuk, $absen->waktu_keluar),
             ] : null,
         ];
+
+        $this->resetPage();
     }
 
     public function clearStatus(): void
@@ -89,13 +115,23 @@ class Scan extends Component
                 'murid.rombel.jurusan:id,nama',
                 'murid.rombel.indeks:id,nama',
             ])
-            ->orderByDesc('tanggal')
+            ->whereDate('tanggal', today())
+            ->when($this->search !== '', function ($query) {
+                $search = trim($this->search);
+
+                $query->whereHas('murid', function ($muridQuery) use ($search) {
+                    $muridQuery->where('nama', 'like', "%{$search}%")
+                        ->orWhere('nipd', 'like', "%{$search}%")
+                        ->orWhere('nisn', 'like', "%{$search}%");
+                });
+            })
+            ->when($this->filterStatus !== '', fn ($query) => $query->where('status', $this->filterStatus))
             ->orderByDesc('updated_at')
-            ->limit(15)
-            ->get();
+            ->paginate($this->perPage);
 
         return view('scanqr::livewire.hardware.scan', [
             'history' => $history,
+            'statusOptions' => ['Hadir', 'Masuk', 'Izin', 'Sakit', 'Alpa', 'Terlambat'],
         ]);
     }
 

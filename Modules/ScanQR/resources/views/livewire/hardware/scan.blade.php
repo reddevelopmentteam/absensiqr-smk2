@@ -24,10 +24,10 @@
 
             <div class="rounded-2xl border border-white/15 bg-white/10 px-5 py-4 backdrop-blur">
                 <p class="text-xs uppercase tracking-[0.2em] text-blue-100">
-                    Riwayat Ditampilkan
+                    Total Hari Ini
                 </p>
                 <h2 class="mt-1 text-2xl font-bold text-white">
-                    {{ $history->count() }}
+                    {{ $history->total() }}
                 </h2>
             </div>
         </div>
@@ -114,12 +114,35 @@
             <!-- RIWAYAT SCAN -->
             <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
                 <div class="border-b border-gray-200 px-6 py-5">
-                    <h2 class="text-xl font-bold text-gray-800">
-                        Riwayat Scan
-                    </h2>
-                    <p class="mt-1 text-sm text-gray-500">
-                        Data absensi terbaru dari database ({{ $history->count() }} data terakhir).
-                    </p>
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">
+                                Riwayat Scan Hari Ini
+                            </h2>
+                            <p class="mt-1 text-sm text-gray-500">
+                                Data absensi hari ini dari database ({{ now()->format('d M Y') }}).
+                            </p>
+                        </div>
+
+                        <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-3 lg:w-auto">
+                            <div class="relative sm:col-span-2 lg:w-72">
+                                <input type="search" wire:model.live.debounce.500ms="search"
+                                    placeholder="Cari nama / NIS / NISN..."
+                                    class="w-full rounded-2xl border border-gray-300 bg-gray-50 py-3 pl-4 pr-12 text-sm transition placeholder:text-gray-400 hover:border-blue-main focus:border-blue-main focus:outline-none focus:ring-4 focus:ring-blue-100" />
+                                <div class="absolute inset-y-0 right-4 flex items-center text-gray-400">
+                                    <iconify-icon icon="mdi:account-search-outline" width="22" height="22"></iconify-icon>
+                                </div>
+                            </div>
+
+                            <select wire:model.live="filterStatus"
+                                class="w-full rounded-2xl border border-gray-300 bg-gray-50 px-4 py-3 text-sm transition hover:border-blue-main focus:border-blue-main focus:outline-none focus:ring-4 focus:ring-blue-100">
+                                <option value="">Semua Status</option>
+                                @foreach ($statusOptions as $statusOption)
+                                    <option value="{{ $statusOption }}">{{ $statusOption }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -148,7 +171,7 @@
                                     };
                                 @endphp
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-5 py-4 text-center text-gray-700">{{ $index + 1 }}</td>
+                                    <td class="px-5 py-4 text-center text-gray-700">{{ $history->firstItem() + $index }}</td>
                                     <td class="px-5 py-4">
                                         <div class="font-semibold text-gray-800">{{ $item->murid?->nama ?? '-' }}</div>
                                         <div class="text-xs text-gray-500">NIS/NISN: {{ $item->murid?->nipd ?? '-' }} / {{ $item->murid?->nisn ?? '-' }}</div>
@@ -171,8 +194,8 @@
                                             <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gray-100 text-gray-400">
                                                 <iconify-icon icon="solar:history-linear" width="36" height="36"></iconify-icon>
                                             </div>
-                                            <h3 class="mt-5 text-lg font-bold text-gray-700">Belum ada riwayat absensi</h3>
-                                            <p class="mt-2 text-sm text-gray-500">Riwayat absensi terbaru akan ditampilkan di sini.</p>
+                                            <h3 class="mt-5 text-lg font-bold text-gray-700">Belum ada riwayat absensi hari ini</h3>
+                                            <p class="mt-2 text-sm text-gray-500">Riwayat scan yang sesuai filter akan ditampilkan di sini.</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -180,6 +203,12 @@
                         </tbody>
                     </table>
                 </div>
+
+                @if ($history->hasPages())
+                    <div class="border-t border-gray-200 px-6 py-4">
+                        {{ $history->links('livewire.components.pagination') }}
+                    </div>
+                @endif
             </div>
         </div>
 
