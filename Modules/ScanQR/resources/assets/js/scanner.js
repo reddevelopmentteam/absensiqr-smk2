@@ -84,6 +84,14 @@ window.destroyScanner = () => {
     isDestroying = false;
 };
 
+window.stopScannerCamera = () => {
+    window.destroyScanner();
+    if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+        stream = null;
+    }
+};
+
 // =========================
 // INIT
 // =========================
@@ -187,12 +195,14 @@ window.initScanner = async () => {
             stream.active &&
             stream.getTracks().every((t) => t.readyState === 'live');
 
+        let nextStream = stream;
         if (!streamOk) {
             // Stream belum ada atau sudah mati — minta baru
             if (stream !== null) {
                 stream.getTracks().forEach((t) => t.stop());
+                stream = null;
             }
-            stream = await navigator.mediaDevices.getUserMedia({
+            nextStream = await navigator.mediaDevices.getUserMedia({
                 video: {
                     // "user" memilih kamera depan pada perangkat mobile.
                     // ideal tetap memberi fallback pada perangkat yang hanya
@@ -204,6 +214,13 @@ window.initScanner = async () => {
                 audio: false,
             });
         }
+        if (currentGeneration !== generation || !reader.isConnected) {
+            if (nextStream && nextStream !== stream) {
+                nextStream.getTracks().forEach((track) => track.stop());
+            }
+            return;
+        }
+        stream = nextStream;
     } catch (err) {
         console.error('[scanner] Gagal akses kamera:', err);
         return;

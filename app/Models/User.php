@@ -5,11 +5,12 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -55,12 +56,13 @@ class User extends Authenticatable
     {
         $path = $this->profile_photo_path;
 
-        if (!$path) {
+        if (! $path) {
             return asset('assets/img/default-avatar.png');
         }
 
         if (Str::startsWith($path, ['http://', 'https://'])) {
             $relativePath = parse_url($path, PHP_URL_PATH);
+
             return $relativePath ?: $path;
         }
 
@@ -127,6 +129,7 @@ class User extends Authenticatable
         $routeMap = [
             'dashboard' => 'dashboard',
             'pilih-absen' => 'pilih-absen',
+            'scan-biometrik' => 'scan-biometrik',
             'laporan' => 'rekap-absen-murid',
             'rekap-absen-murid' => 'rekap-absen-murid',
             'rekap-absen-guru' => 'rekap-absen-guru',
@@ -169,7 +172,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'role_user')->withTimestamps();
     }
 
-    /** @return \Illuminate\Support\Collection<int, Role> */
+    /** @return Collection<int, Role> */
     public function assignedRoles()
     {
         $roles = $this->relationLoaded('roles')

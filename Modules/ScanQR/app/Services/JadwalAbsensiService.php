@@ -3,6 +3,7 @@
 namespace Modules\ScanQR\Services;
 
 use App\Models\JadwalAbsen;
+use App\Models\Murid\Rombel\Rombel;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
@@ -155,6 +156,54 @@ class JadwalAbsensiService
     public function bolehScan(array $jadwal): bool
     {
         return ! in_array($jadwal['tipe'], ['libur', 'pjj'], true);
+    }
+
+    public function isScanWindowOpen(?Carbon $now = null): bool
+    {
+        $now ??= now();
+        $rombelIds = Rombel::query()->pluck('id');
+
+        if ($rombelIds->isEmpty()) {
+            return false;
+        }
+
+        $currentTime = $now->format('H:i:s');
+
+        foreach ($this->forRombels($rombelIds, $now) as $jadwal) {
+            if (! $this->bolehScan($jadwal)) {
+                continue;
+            }
+
+            foreach ([['scan_masuk_mulai', 'scan_masuk_sampai'], ['scan_keluar_mulai', 'scan_keluar_sampai']] as [$startKey, $endKey]) {
+                $start = $this->normalizeWindowTime($jadwal[$startKey] ?? null);
+                $end = $this->normalizeWindowTime($jadwal[$endKey] ?? null);
+
+                if ($start === null || $end === null) {
+                    continue;
+                }
+
+                $withinWindow = $start <= $end
+                    ? $currentTime >= $start && $currentTime <= $end
+                    : $currentTime >= $start || $currentTime <= $end;
+
+                if ($withinWindow) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function normalizeWindowTime($time): ?string
+    {
+        if (! $time) {
+            return null;
+        }
+
+        $time = substr((string) $time, 0, 8);
+
+        return strlen($time) === 5 ? $time.':00' : $time;
     }
 
     public function labelTipe(?string $tipe): string

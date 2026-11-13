@@ -107,6 +107,25 @@
             </div>
         </a>
 
+        @if (auth()->user()?->canAccess('scan-biometrik'))
+            <a href="{{ route('scan-biometrik') }}"
+                class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 to-indigo-700 p-6 text-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl col-span-1 lg:col-span-2">
+                <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 transition group-hover:scale-110"></div>
+                <div class="relative z-10 flex h-full flex-col justify-between">
+                    <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
+                        <iconify-icon icon="solar:face-scan-circle-bold" width="34" height="34"></iconify-icon>
+                    </div>
+                    <div class="mt-10 flex items-center justify-between gap-3">
+                        <div>
+                            <h1 class="text-2xl font-bold">Face Recognition</h1>
+                            <p class="mt-2 text-sm text-indigo-100">Kenali wajah melalui kamera dengan foto murid di data murid, lalu konfirmasi sebelum mencatat absensi.</p>
+                        </div>
+                        <iconify-icon class="transition group-hover:translate-x-1" icon="solar:arrow-right-linear" width="28" height="28"></iconify-icon>
+                    </div>
+                </div>
+            </a>
+        @endif
+
         <!-- ABSEN HARDWARE SCANNER -->
         <a href="{{ route('scan-hardware') }}"
             class="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-500 to-blue-600 p-6 text-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl col-span-1 lg:col-span-2">

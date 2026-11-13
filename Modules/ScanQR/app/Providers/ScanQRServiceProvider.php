@@ -49,6 +49,10 @@ class ScanQRServiceProvider extends ModuleServiceProvider
             return Limit::perMinute(120)->by('scan-ping:'.$request->session()->getId());
         });
 
+        RateLimiter::for('scan-camera-status', static function (Request $request) {
+            return Limit::perMinute(120)->by('scan-camera-status:'.$request->user()?->getAuthIdentifier());
+        });
+
         ModuleLivewireRegistrar::register($this->name);
     }
 

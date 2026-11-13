@@ -3,6 +3,9 @@
 namespace App\Models\Murid;
 
 use App\Enums\StudentStatus;
+use App\Models\Biometric\BiometricConsent;
+use App\Models\Biometric\BiometricEvaluation;
+use App\Models\Biometric\BiometricTemplate;
 use App\Models\Murid\Rombel\Rombel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -93,6 +96,26 @@ class Murid extends Model
     public function izinMurid()
     {
         return $this->hasMany(IzinMurid::class)->withTrashed();
+    }
+
+    public function biometricConsent()
+    {
+        return $this->hasOne(BiometricConsent::class);
+    }
+
+    public function biometricTemplate()
+    {
+        return $this->hasOne(BiometricTemplate::class)->withTrashed();
+    }
+
+    public function biometricEvaluations()
+    {
+        return $this->hasMany(BiometricEvaluation::class);
+    }
+
+    public function latestBiometricEvaluation()
+    {
+        return $this->hasOne(BiometricEvaluation::class)->latestOfMany('id');
     }
 
     public function getRouteKeyName()

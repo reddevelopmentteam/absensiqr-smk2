@@ -44,6 +44,10 @@
             'active' => 'mdi:account-check',
             'inactive' => 'mdi:account-check-outline'
         ],
+        'scanBiometrik' => [
+            'active' => 'solar:face-scan-circle-bold',
+            'inactive' => 'solar:face-scan-circle-outline'
+        ],
         'absenGuru' => [
             'active' => 'mdi:account-multiple-check',
             'inactive' => 'mdi:account-multiple-check-outline'

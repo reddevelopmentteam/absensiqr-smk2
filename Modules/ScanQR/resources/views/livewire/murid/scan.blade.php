@@ -6,6 +6,7 @@
             [],
             false,
         );
+        $scanCameraStatusUrl = route('scan-camera-status');
     @endphp
     <header
         class="sticky top-0 z-30 border-b border-white/10 bg-slate-950/80 px-4 py-3 shadow-2xl backdrop-blur-xl sm:px-6">
@@ -71,6 +72,12 @@
                 <!-- reader wrapper: portrait-friendly on phones, square on larger screens -->
                 <div
                     class="relative aspect-[3/4] w-full overflow-hidden rounded-[1.1rem] bg-black shadow-2xl sm:rounded-[1.6rem] min-[480px]:aspect-square">
+                    <div data-scan-camera-schedule-overlay class="absolute inset-0 z-30 flex items-center justify-center bg-slate-950/90 p-6 text-center text-white">
+                        <div>
+                            <iconify-icon icon="solar:clock-circle-bold" width="42" height="42" class="text-blue-300"></iconify-icon>
+                            <p data-scan-camera-schedule-message class="mt-3 text-sm font-semibold">Memeriksa jadwal absensi…</p>
+                        </div>
+                    </div>
 
                     <!-- corner frame -->
                     <div class="pointer-events-none absolute inset-0 z-20">
@@ -163,6 +170,7 @@
 @script
     <script>
         const serverPingUrl = @json($serverPingUrl);
+        const scanCameraStatusUrl = @json($scanCameraStatusUrl);
         let browserRefreshVersion = @json($siteSettings['system.browser_refresh_version'] ?? '');
         const connectionCheckInterval = 5000;
         const connectionTimeout = 4000;
@@ -179,6 +187,8 @@
         let disposed = false;
         let scanAudio;
         let scanResults;
+        let stopCameraSchedule;
+        window.scanScheduleOpen = false;
         const listen = (target, event, handler) => target.addEventListener(event, handler, {
             signal: lifecycle.signal
         });
@@ -188,10 +198,12 @@
             clearInterval(clockTimer);
             clearTimeout(connectionCheckTimer);
             connectionRequestController?.abort();
+            stopCameraSchedule?.();
             scanResults?.dispose();
-            window.destroyScanner?.();
+            window.stopScannerCamera?.();
             window.resetScannerQrLock?.();
             window.scanned = false;
+            window.scanScheduleOpen = false;
         });
         let isServerConnected = true;
         let connectionCheckTimer = null;
@@ -328,6 +340,25 @@
         startClock();
         scheduleServerCheck(0);
 
+        stopCameraSchedule = window.watchCameraSchedule(scanCameraStatusUrl, open => {
+            window.scanScheduleOpen = open;
+            const overlay = document.querySelector('[data-scan-camera-schedule-overlay]');
+            const message = document.querySelector('[data-scan-camera-schedule-message]');
+            if (overlay) overlay.classList.toggle('hidden', open);
+            if (message) message.textContent = open
+                ? ''
+                : 'Jadwal absensi belum dibuka atau sudah ditutup. Kamera scan dinonaktifkan.';
+
+            if (!open) {
+                window.scanned = true;
+                window.stopScannerCamera?.();
+            } else if (!scanResults?.isOpen()) {
+                window.resetScannerQrLock?.();
+                window.scanned = false;
+                window.initScanner?.();
+            }
+        });
+
 
         import('{{ Vite::asset('Modules/ScanQR/resources/assets/js/scanner.js') }}')
             .then(({
@@ -345,6 +376,7 @@
                     pause,
                     resume: () => {
                         // Allow the same stationary QR again after each modal closes.
+                        if (!window.scanScheduleOpen) return;
                         window.resetScannerQrLock();
                         window.scanned = false;
                         window.initScanner();
@@ -502,7 +534,7 @@
                     }
                 });
                 listen(document, 'livewire:navigating', () => scanResults.dispose());
-                if (!scanResults.isOpen()) window.initScanner();
+                if (!scanResults.isOpen() && window.scanScheduleOpen) window.initScanner();
             });
     </script>
 @endscript

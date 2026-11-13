@@ -288,8 +288,8 @@
             @endif
 
             <!-- absensi -->
-            @if ($canAccessGroup('Absensi'))
-                <li class="sidebar-group-wrap relative" x-data="{ open: $persist({{ request()->routeIs('absensi-*') ? 'true' : 'false' }}).using(sessionStorage).as('sidebar-absensi') }">
+            @if ($canAccessGroup('Absensi') || $canAccessRoute('scan-biometrik'))
+                <li class="sidebar-group-wrap relative" x-data="{ open: $persist({{ (request()->routeIs('absensi-*') || request()->routeIs('scan-biometrik')) ? 'true' : 'false' }}).using(sessionStorage).as('sidebar-absensi') }">
                     <button x-bind:aria-expanded="open.toString()" aria-haspopup="true" @click="open = !open"
                         class="sidebar-group-btn relative flex w-full items-center justify-between rounded-lg px-4 py-2 text-white hover:bg-blue-deep-solid">
                         <span class="flex items-center gap-2 capitalize min-w-0">

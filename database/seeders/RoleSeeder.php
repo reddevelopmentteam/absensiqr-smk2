@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class RoleSeeder extends Seeder
 {
@@ -14,6 +15,7 @@ class RoleSeeder extends Seeder
         'super-admin' => [
             'dashboard',
             'scan-qrcode',
+            'scan-biometrik',
             'pilih-absen',
             'laporan',
             'rekap-absen',
@@ -55,19 +57,20 @@ class RoleSeeder extends Seeder
             'profil',
         ],
         'operator' => [
-            "pilih-absen",
-            "scan-qrcode",
-            "generate-qr",
-            "manajemen-waktu",
-            "profil",
-            "izin-keluar",
-            "izin-telat",
-            "laporan-pengawas"
+            'pilih-absen',
+            'scan-qrcode',
+            'scan-biometrik',
+            'generate-qr',
+            'manajemen-waktu',
+            'profil',
+            'izin-keluar',
+            'izin-telat',
+            'laporan-pengawas',
         ],
         'scanner' => [
-            "pilih-absen",
-            "scan-qrcode",
-            "profil",
+            'pilih-absen',
+            'scan-qrcode',
+            'profil',
         ],
     ];
 
@@ -92,7 +95,7 @@ class RoleSeeder extends Seeder
                 [
                     'name' => $nama,
                     'permissions' => $this->defaultPermissions[
-                        \Illuminate\Support\Str::slug($nama)
+                        Str::slug($nama)
                     ] ?? [],
                 ],
             );
