@@ -1,6 +1,81 @@
 import { createScanAudio } from '../../Modules/ScanQR/resources/assets/js/scan-audio.js';
 
 let faceApiPromise;
+let descriptorDatabasePromise;
+const DESCRIPTOR_DATABASE = 'face-recognition-descriptors-v1';
+const DESCRIPTOR_STORE = 'students';
+const DESCRIPTOR_MODEL_VERSION = 'face-api-0.22.2-recognition-v1';
+
+function openDescriptorDatabase() {
+    if (!('indexedDB' in window)) return Promise.resolve(null);
+    if (descriptorDatabasePromise) return descriptorDatabasePromise;
+
+    descriptorDatabasePromise = new Promise((resolve) => {
+        try {
+            const request = window.indexedDB.open(DESCRIPTOR_DATABASE, 1);
+            request.onupgradeneeded = () => {
+                if (!request.result.objectStoreNames.contains(DESCRIPTOR_STORE)) {
+                    request.result.createObjectStore(DESCRIPTOR_STORE, { keyPath: 'uuid' });
+                }
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => resolve(null);
+            request.onblocked = () => resolve(null);
+        } catch {
+            resolve(null);
+        }
+    });
+
+    return descriptorDatabasePromise;
+}
+
+function databaseRequest(request) {
+    return new Promise((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function writeCachedDescriptor(database, entry) {
+    if (!database) return;
+    try {
+        const transaction = database.transaction(DESCRIPTOR_STORE, 'readwrite');
+        transaction.objectStore(DESCRIPTOR_STORE).put(entry);
+        await new Promise((resolve) => {
+            transaction.oncomplete = resolve;
+            transaction.onerror = resolve;
+            transaction.onabort = resolve;
+        });
+    } catch {
+        // Recognition continues even when browser storage is unavailable.
+    }
+}
+
+async function readAllCachedDescriptors(database) {
+    if (!database) return new Map();
+    try {
+        const transaction = database.transaction(DESCRIPTOR_STORE, 'readonly');
+        const entries = await databaseRequest(transaction.objectStore(DESCRIPTOR_STORE).getAll());
+        return new Map(entries.map((entry) => [entry.uuid, entry]));
+    } catch {
+        return new Map();
+    }
+}
+
+async function removeStaleDescriptors(database, students) {
+    if (!database) return;
+    try {
+        const activeIds = new Set(students.map((student) => student.uuid));
+        const transaction = database.transaction(DESCRIPTOR_STORE, 'readwrite');
+        const store = transaction.objectStore(DESCRIPTOR_STORE);
+        const request = store.getAllKeys();
+        request.onsuccess = () => request.result.forEach((uuid) => {
+            if (!activeIds.has(uuid)) store.delete(uuid);
+        });
+    } catch {
+        // Cache cleanup is best effort and does not block the camera.
+    }
+}
 
 function loadFaceApi() {
     if (window.faceapi) return Promise.resolve(window.faceapi);
@@ -44,10 +119,37 @@ export async function startFaceRecognition(video, canvas, students, callbacks = 
     const labeledDescriptors = [];
     const namesByUuid = new Map();
     const detectorOptions = new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 });
+    const descriptorDatabase = await openDescriptorDatabase();
+    const cachedDescriptors = await readAllCachedDescriptors(descriptorDatabase);
+    const activeImageVersions = new Map(students.map((student) => [
+        student.uuid,
+        `${DESCRIPTOR_MODEL_VERSION}:${student.imageVersion}`,
+    ]));
+    const photosToPrepare = students.filter((student) =>
+        cachedDescriptors.get(student.uuid)?.imageVersion !== activeImageVersions.get(student.uuid),
+    );
+    let preparedNewPhotos = 0;
+    callbacks.onStatus?.(photosToPrepare.length === 0
+        ? `Menggunakan cache foto ${students.length} murid…`
+        : `Memproses ${photosToPrepare.length} foto baru; foto lainnya menggunakan cache…`);
 
     for (let index = 0; index < students.length; index++) {
         const student = students[index];
-        callbacks.onStatus?.(`Menyiapkan foto murid ${index + 1} dari ${students.length}…`);
+        const imageVersion = activeImageVersions.get(student.uuid);
+        const cached = cachedDescriptors.get(student.uuid);
+        if (cached?.imageVersion === imageVersion) {
+            if (Array.isArray(cached.descriptor) && cached.descriptor.length > 0) {
+                labeledDescriptors.push(new faceapi.LabeledFaceDescriptors(
+                    student.uuid,
+                    [new Float32Array(cached.descriptor)],
+                ));
+                namesByUuid.set(student.uuid, student.nama);
+            }
+            continue;
+        }
+
+        preparedNewPhotos++;
+        callbacks.onStatus?.(`Menyiapkan foto baru ${preparedNewPhotos} dari ${photosToPrepare.length}…`);
 
         try {
             const image = await faceapi.fetchImage(student.imageUrl);
@@ -56,14 +158,28 @@ export async function startFaceRecognition(video, canvas, students, callbacks = 
                 .withFaceLandmarks(true)
                 .withFaceDescriptor();
 
-            if (!result) continue;
+            if (!result) {
+                await writeCachedDescriptor(descriptorDatabase, {
+                    uuid: student.uuid,
+                    imageVersion,
+                    descriptor: null,
+                });
+                continue;
+            }
 
             labeledDescriptors.push(new faceapi.LabeledFaceDescriptors(student.uuid, [result.descriptor]));
             namesByUuid.set(student.uuid, student.nama);
+            await writeCachedDescriptor(descriptorDatabase, {
+                uuid: student.uuid,
+                imageVersion,
+                descriptor: Array.from(result.descriptor),
+            });
         } catch (error) {
             console.warn(`Foto referensi murid ${student.uuid} tidak dapat dianalisis.`, error);
         }
     }
+
+    await removeStaleDescriptors(descriptorDatabase, students);
 
     if (labeledDescriptors.length === 0) {
         scanAudio.dispose();

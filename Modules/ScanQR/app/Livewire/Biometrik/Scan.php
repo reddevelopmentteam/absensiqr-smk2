@@ -127,6 +127,7 @@ class Scan extends Component
                     'uuid' => $murid->uuid,
                     'nama' => $murid->nama,
                     'imageUrl' => $this->imageUrl($murid->image_path),
+                    'imageVersion' => hash('sha256', (string) $murid->image_path),
                 ])
                 ->all(),
         ]);
