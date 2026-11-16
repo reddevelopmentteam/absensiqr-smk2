@@ -174,21 +174,21 @@ class JadwalAbsensiService
                 continue;
             }
 
-            foreach ([['scan_masuk_mulai', 'scan_masuk_sampai'], ['scan_keluar_mulai', 'scan_keluar_sampai']] as [$startKey, $endKey]) {
-                $start = $this->normalizeWindowTime($jadwal[$startKey] ?? null);
-                $end = $this->normalizeWindowTime($jadwal[$endKey] ?? null);
+            // Kamera dibuka sejak scan masuk dimulai dan baru ditutup saat
+            // jendela scan pulang berakhir, termasuk jeda di antara keduanya.
+            $start = $this->normalizeWindowTime($jadwal['scan_masuk_mulai'] ?? null);
+            $end = $this->normalizeWindowTime($jadwal['scan_keluar_sampai'] ?? null);
 
-                if ($start === null || $end === null) {
-                    continue;
-                }
+            if ($start === null || $end === null) {
+                continue;
+            }
 
-                $withinWindow = $start <= $end
-                    ? $currentTime >= $start && $currentTime <= $end
-                    : $currentTime >= $start || $currentTime <= $end;
+            $withinWindow = $start <= $end
+                ? $currentTime >= $start && $currentTime <= $end
+                : $currentTime >= $start || $currentTime <= $end;
 
-                if ($withinWindow) {
-                    return true;
-                }
+            if ($withinWindow) {
+                return true;
             }
         }
 
