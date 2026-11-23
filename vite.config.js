@@ -31,6 +31,11 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
+        port: 5173,
+        strictPort: true,
+        // Apache serves the app on *.test; the Vite client/HMR is loaded from
+        // localhost:5173, so both hosts must be allowed to reach the dev server.
+        allowedHosts: ['localhost', 'ict-project.test', '.test'],
         hmr: {
             host: 'localhost',
         },
