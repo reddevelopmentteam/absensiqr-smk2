@@ -38,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(120)->by('browser-refresh:'.$request->session()->getId());
         });
 
+        RateLimiter::for('library-api', static function (Request $request) {
+            return Limit::perMinute(120)->by('library-api:'.($request->user()?->id ?: $request->ip()));
+        });
+
         if (\Schema::hasTable('setting')) {
             View::share('siteSettings', Setting::values());
         }
