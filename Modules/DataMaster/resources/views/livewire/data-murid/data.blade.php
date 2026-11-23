@@ -69,6 +69,9 @@
                     <livewire:datamaster.data-murid.components.modal.import />
 
                 </div>
+
+                <!-- export excel -->
+                <livewire:datamaster.data-murid.components.modal.export />
             </div>
 
         </div>
