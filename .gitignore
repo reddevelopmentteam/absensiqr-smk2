@@ -24,6 +24,8 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/backups-local
+/.php-version
 /vendor
 Homestead.json
 Homestead.yaml
