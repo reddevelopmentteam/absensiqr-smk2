@@ -21,6 +21,7 @@ class Import extends Component
     public int $importPercent = 0;
     public bool $isImporting = false;
     public int $currentRow = 6;
+    private int $headingRow = 5;
     public int $chunkSize = 365;
     public int $tahunMasuk = 0;
     private int $maxExecutionTime = 120;
@@ -42,7 +43,8 @@ class Import extends Component
         $this->resetImportProgress();
 
         $fullPath = $this->getUploadPath();
-        $this->totalRows = $this->countRows($fullPath);
+        [$this->headingRow, $this->currentRow] = $this->detectHeaderAndDataRows($fullPath);
+        $this->totalRows = $this->countRows($fullPath, $this->currentRow);
 
         if ($this->totalRows === 0) {
             ToastMagic::warning('Import dibatalkan', 'Tidak ada baris data yang bisa diproses.');
@@ -89,7 +91,32 @@ class Import extends Component
         $this->currentRow = 6;
     }
 
-    private function countRows(string $path): int
+    /**
+     * Dapodik exports have four metadata rows, a main header on row 5, and a
+     * second header on row 6 for the grouped parent columns. The project
+     * template has data directly on row 6, so detect which layout was uploaded.
+     */
+    private function detectHeaderAndDataRows(string $path): array
+    {
+        $reader = IOFactory::createReaderForFile($path);
+        $reader->setReadDataOnly(true);
+        $reader->setReadFilter(new class implements IReadFilter {
+            public function readCell($column, $row, $worksheetName = ''): bool
+            {
+                return $row === 5 || $row === 6;
+            }
+        });
+        $spreadsheet = $reader->load($path);
+        $sheet = $spreadsheet->getActiveSheet();
+        $firstCellRow6 = $sheet->getCell('A6')->getValue();
+        $row6HasData = is_numeric($firstCellRow6);
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet, $reader);
+
+        return [5, $row6HasData ? 6 : 7];
+    }
+
+    private function countRows(string $path, int $dataStartRow): int
     {
         $this->extendExecutionTime();
 
@@ -105,7 +132,7 @@ class Import extends Component
         unset($spreadsheet);
         unset($reader);
 
-        return max($highestRow - 5, 0);
+        return max($highestRow - $dataStartRow + 1, 0);
     }
 
     private function processNextChunk(): void
@@ -147,7 +174,7 @@ class Import extends Component
     {
         $this->extendExecutionTime();
 
-        $headingRow = 5;
+        $headingRow = $this->headingRow;
         $endRow = $startRow + $chunkSize - 1;
 
         $reader = IOFactory::createReaderForFile($path);
